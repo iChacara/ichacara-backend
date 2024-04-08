@@ -1,17 +1,15 @@
 import { User } from '@prisma/client';
 import { UserModel } from '../user-model';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from 'src/_database/prisma.service';
 import { UUID, randomUUID } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
-import { CreateUserBody } from 'src/dto/create-user-body';
-import { AlterUserBody } from 'src/dto/alter-user-body';
-import { DeleteUserBody } from 'src/dto/delete-user-body';
+import { AlterUserBody, CreateUserBody, FormatedUser } from '../../dto/_index';
 
 @Injectable()
 export class PrismaUserModel implements UserModel {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: CreateUserBody): Promise<User> {
+  async create(data: CreateUserBody): Promise<FormatedUser> {
     const uuid = randomUUID();
     const user: User = { ...data, id: uuid };
 
@@ -19,16 +17,23 @@ export class PrismaUserModel implements UserModel {
       data: user,
     });
 
-    return created;
+    const { password, ...result } = created;
+
+    return result;
   }
 
-  async get(): Promise<User[]> {
+  async get(): Promise<FormatedUser[]> {
     const users = await this.prisma.user.findMany();
 
-    return users;
+    const FormatedUsers: FormatedUser[] = users.map((user) => {
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    });
+
+    return FormatedUsers;
   }
 
-  async getOne(id: UUID): Promise<User | null> {
+  async getOne(id: UUID): Promise<FormatedUser | null> {
     const user = await this.prisma.user.findUnique({
       where: { id: id },
     });
@@ -36,7 +41,7 @@ export class PrismaUserModel implements UserModel {
     return user;
   }
 
-  async update(data: AlterUserBody): Promise<User> {
+  async update(data: AlterUserBody): Promise<FormatedUser> {
     const user = await this.prisma.user.update({
       where: { id: data.id },
       data: {
@@ -47,7 +52,9 @@ export class PrismaUserModel implements UserModel {
       },
     });
 
-    return user;
+    const { password, ...result } = user;
+
+    return result;
   }
 
   async delete(id: UUID): Promise<User> {
