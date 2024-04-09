@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { AlterUserDTO, CreateUserDTO, GetUserDTO } from './dto/_index';
-import { FormatedUser } from './formatedUser';
+import { FormatedUser } from './user';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -18,7 +18,6 @@ export class UserController {
 
   @Post()
   async post(@Body() body: CreateUserDTO): Promise<FormatedUser> {
-    console.log(body);
     const user = await this.userService.post(body);
 
     return user;

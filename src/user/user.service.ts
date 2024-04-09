@@ -6,7 +6,7 @@ import {
 import { User } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from 'src/_database/prisma.service';
-import { FormatedUser } from './formatedUser';
+import { FormatedUser } from './user';
 
 @Injectable()
 export class UserService {
