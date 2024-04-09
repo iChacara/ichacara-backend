@@ -1,11 +1,15 @@
-import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import {
-  AlterUserBody,
-  CreateUserBody,
-  DeleteUserBody,
-  GetUserBody,
-  FormatedUser,
-} from './dto/_index';
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common/exceptions';
+import { AlterUserDTO, CreateUserDTO, GetUserDTO } from './dto/_index';
+import { FormatedUser } from './formatedUser';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -13,36 +17,40 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Post()
-  async post(@Body() body: CreateUserBody): Promise<FormatedUser> {
+  async post(@Body() body: CreateUserDTO): Promise<FormatedUser> {
+    console.log(body);
     const user = await this.userService.post(body);
 
     return user;
   }
 
-  @Get('all')
-  async get(): Promise<FormatedUser[]> {
-    const users = await this.userService.get();
-
-    return users;
-  }
-
   @Get()
-  async getOne(@Body() body: GetUserBody): Promise<FormatedUser> {
-    const users = await this.userService.getOne(body);
+  async get(@Query() filters: GetUserDTO): Promise<FormatedUser[]> {
+    console.log(filters.id);
+    if (
+      filters.id === undefined &&
+      filters.email === undefined &&
+      filters.name === undefined
+    ) {
+      throw new NotFoundException('Nenhum parâmetro de filtro fornecido.');
+    }
+
+    const users = await this.userService.getBy(filters);
 
     return users;
   }
 
   @Put()
-  async put(@Body() body: AlterUserBody): Promise<FormatedUser> {
-    const users = await this.userService.getOne(body);
+  async put(@Body() body: AlterUserDTO): Promise<FormatedUser> {
+    const users = await this.userService.put(body);
 
     return users;
   }
 
   @Delete()
-  async delete(@Body() body: DeleteUserBody): Promise<FormatedUser> {
-    const user = await this.userService.delete(body);
+  async delete(@Query('id') id: string): Promise<FormatedUser> {
+    console.log(id);
+    const user = await this.userService.delete({ id: id });
 
     return user;
   }

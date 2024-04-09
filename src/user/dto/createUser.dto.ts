@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, Length, MinLength } from 'class-validator';
 
-export class CreateUserBody {
+export class CreateUserDTO {
   @IsNotEmpty()
   @Length(5, 50)
   name: string;

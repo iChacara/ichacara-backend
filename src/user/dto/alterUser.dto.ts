@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { UUID } from 'crypto';
 
-export class AlterUserBody {
+export class AlterUserDTO {
   @IsNotEmpty()
   @IsUUID()
   id: UUID;
