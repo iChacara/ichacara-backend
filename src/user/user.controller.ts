@@ -11,6 +11,7 @@ import { NotFoundException } from '@nestjs/common/exceptions';
 import { AlterUserDTO, CreateUserDTO, GetUserDTO } from './dto/_index';
 import { FormatedUser } from './user';
 import { UserService } from './user.service';
+import { AuthDTO } from './dto/auth.dto';
 
 @Controller('user')
 export class UserController {
@@ -19,6 +20,13 @@ export class UserController {
   @Post()
   async post(@Body() body: CreateUserDTO): Promise<FormatedUser> {
     const user = await this.userService.post(body);
+
+    return user;
+  }
+
+  @Post('/auth')
+  async auth(@Body() body: AuthDTO): Promise<{ message: string; data: any }> {
+    const user = await this.userService.auth(body);
 
     return user;
   }

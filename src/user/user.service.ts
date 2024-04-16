@@ -7,6 +7,7 @@ import { User } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from 'src/_database/prisma.service';
 import { FormatedUser } from './user';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -36,11 +37,49 @@ export class UserService {
       throw new NotAcceptableException('Email já cadastrado na plataforma');
     }
 
+    // Hash password
+    const saltOrRounds = 10;
+    user.password = await bcrypt.hash(user.password, saltOrRounds);
+
     const created = await this.prisma.user.create({
       data: user,
     });
 
     return this.formatUserReturn(created)[0];
+  }
+
+  async auth(authData: {
+    email: string;
+    password: string;
+  }): Promise<{ message: string; data: any }> {
+    const existentUser = await this.prisma.user.findUnique({
+      where: { email: authData.email },
+    });
+
+    let message = 'E-mail ou senha incorretos';
+
+    if (!existentUser) {
+      return { message, data: null };
+    }
+
+    console.log(authData.password, existentUser.password);
+
+    const isCorrectPassword = await bcrypt.compare(
+      authData.password,
+      existentUser.password,
+    );
+
+    console.log(isCorrectPassword);
+
+    if (!isCorrectPassword) {
+      let message = 'senha incorretos';
+
+      return { message, data: null };
+    }
+
+    message = 'JWT TOken';
+
+    return { message, data: 'JWT CODE' };
   }
 
   async getBy(filters: Partial<User>): Promise<FormatedUser[]> {

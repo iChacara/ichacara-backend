@@ -13,4 +13,6 @@ export class GetUserDTO {
   @IsEmail()
   @IsOptional()
   email: string;
+
+  password: string;
 }
