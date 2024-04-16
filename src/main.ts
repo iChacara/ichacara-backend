@@ -9,8 +9,8 @@ const PORT = process.env.PORT || 3000;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger({
-      instance: instance
-    })
+      instance: instance,
+    }),
   });
 
   app.useGlobalPipes(
@@ -19,6 +19,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
+  app.enableCors();
 
   await app.listen(PORT);
 }
