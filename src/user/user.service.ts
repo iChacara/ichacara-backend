@@ -72,51 +72,48 @@ export class UserService {
     let message = 'E-mail ou senha incorretos';
 
     if (!existentUser) {
+      this.logger.log(
+        `Attempting to login with a non-existent user - ${authData.email}`,
+        this.SERVICE,
+      );
+
       return { message, data: null };
     }
-
-    console.log(authData.password, existentUser.password);
 
     const isCorrectPassword = await bcrypt.compare(
       authData.password,
       existentUser.password,
     );
 
-    console.log(isCorrectPassword);
-
     if (!isCorrectPassword) {
-      message = 'senha incorretos';
+      message = 'E-mail ou senha incorretos';
 
+      this.logger.log(
+        `Attempting to login with a incorrect password - ${authData.email}`,
+        this.SERVICE,
+      );
       return { message, data: null };
     }
 
-    const payload = { sub: existentUser.id, username: 'jorginho' };
+    const payload = { sub: existentUser.id, username: existentUser.name };
 
     message = 'Autenticado com sucesso!';
 
     const jwtToken = await this.jwtService.signAsync(payload);
 
+    this.logger.log(
+      `Login attempt successful - ${authData.email}`,
+      this.SERVICE,
+    );
     return { message, data: { jwtToken } };
   }
 
   async getBy(filters: Partial<User>): Promise<FormatedUser[]> {
-    const { id, name, email } = filters;
-    let query = {};
-
-    if (id) {
-      query['id'] = id;
-    }
-    if (name) {
-      query['name'] = name;
-    }
-    if (email) {
-      query['email'] = email;
-    }
-
     const users = await this.prisma.user.findMany({
       where: filters,
     });
 
+    this.logger.log(`Search for users completed - ${filters}`, this.SERVICE);
     return this.formatUserReturn(users);
   }
 

@@ -12,11 +12,13 @@ import { AlterUserDTO, CreateUserDTO, GetUserDTO } from './dto/_index';
 import { FormatedUser } from './user';
 import { UserService } from './user.service';
 import { AuthDTO } from './dto/auth.dto';
+import { Public } from '../guards/metadata';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Public()
   @Post()
   async post(@Body() body: CreateUserDTO): Promise<FormatedUser> {
     const user = await this.userService.post(body);
@@ -24,6 +26,7 @@ export class UserController {
     return user;
   }
 
+  @Public()
   @Post('/auth')
   async auth(@Body() body: AuthDTO): Promise<{ message: string; data: any }> {
     const user = await this.userService.auth(body);
@@ -33,7 +36,6 @@ export class UserController {
 
   @Get()
   async get(@Query() filters: GetUserDTO): Promise<FormatedUser[]> {
-    console.log(filters.id);
     if (
       filters.id === undefined &&
       filters.email === undefined &&
@@ -56,7 +58,6 @@ export class UserController {
 
   @Delete()
   async delete(@Query('id') id: string): Promise<FormatedUser> {
-    console.log(id);
     const user = await this.userService.delete({ id: id });
 
     return user;
