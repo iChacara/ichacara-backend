@@ -21,7 +21,5 @@ async function bootstrap() {
   );
 
   await app.listen(PORT);
-
-  console.log('http://localhost:3000');
 }
 bootstrap();
