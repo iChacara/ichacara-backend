@@ -7,6 +7,7 @@ import { User } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import { PrismaService } from 'src/_database/prisma.service';
 import { FormatedUser } from './user';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -14,6 +15,7 @@ export class UserService {
   constructor(
     private prisma: PrismaService,
     private readonly logger: Logger,
+    private readonly jwtService: JwtService,
   ) {}
 
   SERVICE: string = UserService.name;
@@ -63,7 +65,7 @@ export class UserService {
     email: string;
     password: string;
   }): Promise<{ message: string; data: any }> {
-    const existentUser = await this.prisma.user.findUnique({
+    const existentUser: User = await this.prisma.user.findUnique({
       where: { email: authData.email },
     });
 
@@ -83,14 +85,18 @@ export class UserService {
     console.log(isCorrectPassword);
 
     if (!isCorrectPassword) {
-      let message = 'senha incorretos';
+      message = 'senha incorretos';
 
       return { message, data: null };
     }
 
-    message = 'JWT TOken';
+    const payload = { sub: existentUser.id, username: 'jorginho' };
 
-    return { message, data: 'JWT CODE' };
+    message = 'Autenticado com sucesso!';
+
+    const jwtToken = await this.jwtService.signAsync(payload);
+
+    return { message, data: { jwtToken } };
   }
 
   async getBy(filters: Partial<User>): Promise<FormatedUser[]> {
