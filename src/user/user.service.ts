@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   NotAcceptableException,
   NotFoundException,
@@ -10,7 +10,12 @@ import { FormatedUser } from './user';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly logger: Logger,
+  ) {}
+
+  SERVICE: string = UserService.name;
 
   private formatUserReturn(users: User[] | User): FormatedUser[] {
     if (Array.isArray(users)) {
@@ -33,6 +38,11 @@ export class UserService {
     const hasEmail = await this.getBy({ email: data.email });
 
     if (hasEmail.length) {
+      const email = hasEmail[0].email;
+      this.logger.log(
+        `Attempt to register an already used email - ${email}`,
+        this.SERVICE,
+      );
       throw new NotAcceptableException('Email já cadastrado na plataforma');
     }
 
@@ -40,6 +50,7 @@ export class UserService {
       data: user,
     });
 
+    this.logger.log(`User created successfully - ID: ${user.id}`, this.SERVICE);
     return this.formatUserReturn(created)[0];
   }
 
