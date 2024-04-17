@@ -13,6 +13,7 @@ import { FormatedUser } from './user';
 import { UserService } from './user.service';
 import { AuthDTO } from './dto/auth.dto';
 import { Public } from '../guards/metadata';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
@@ -26,6 +27,7 @@ export class UserController {
     return user;
   }
 
+  @ApiTags('explo')
   @Public()
   @Post('/auth')
   async auth(@Body() body: AuthDTO): Promise<{ message: string; data: any }> {
