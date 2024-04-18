@@ -13,6 +13,7 @@ services:
     command: ['npm', 'run', 'start:dev']
     volumes:
       - ./src:/usr/src/app/src
+      - /usr/src/app/node_modules
 
   db:
     container_name: db

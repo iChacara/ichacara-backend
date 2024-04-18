@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output = "../node_modules/.prisma/client"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -12,8 +12,52 @@ datasource db {
 }
 
 model User {
-  id String @id
-  email String @unique
-  name String
-  password String
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String
+  fullName  String
+  password  String
+  createdAt DateTime @default(now())
+  deletedAt DateTime
+  updatedAt DateTime
+  lessor    Lessor?
+  lessee    Lessee?
+}
+
+model Lessor {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  deletedAt DateTime
+  updatedAt DateTime
+  Post      Post[]
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
+}
+
+model Lessee {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  deletedAt DateTime
+  updatedAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @unique
+}
+
+model Post {
+  id               String   @id @default(uuid())
+  title            String
+  description      String
+  routeInstruction String
+  Address          String
+  Street           String
+  District         String
+  City             String
+  UF               String
+  CEP              String
+  images           Json
+  createdAt        DateTime @default(now())
+  deletedAt        DateTime
+  updatedAt        DateTime
+  lessor           Lessor   @relation(fields: [lessorId], references: [id])
+  lessorId         String
 }
