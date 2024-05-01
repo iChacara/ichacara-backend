@@ -10,13 +10,7 @@ import {
 import { CreatePostDTO } from './dtos';
 import { PostService } from './services/post.service';
 import { Post as PostInterface } from '@prisma/client';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('post')
 export class PostController {
@@ -49,7 +43,7 @@ export class PostController {
     },
   })
   async post(@Body() body: CreatePostDTO): Promise<any> {
-    const post: Omit<PostInterface, 'id'> = {
+    const post: Omit<PostInterface, 'id' | 'lessorId'> = {
       title: body.title,
       description: body.description,
       routeInstruction: body.routeInstruction,
@@ -63,10 +57,9 @@ export class PostController {
       createdAt: null,
       updatedAt: null,
       deletedAt: null,
-      lessorId: null,
     };
 
-    this.postService.createPost(post);
+    return this.postService.createPost(post);
   }
 
   @Get()

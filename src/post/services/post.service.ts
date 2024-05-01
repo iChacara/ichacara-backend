@@ -12,8 +12,11 @@ export class PostService {
   ) {}
 
   // usar o dto aqui não parece ser o mais correto, mas é um mal que estou
-  async createPost(post: Omit<Post, 'id'>) {
-    this.prisma.post.create({ data: post });
+  async createPost(post: Omit<Post, 'id' | 'lessorId'>) {
+    const result = await this.prisma.post.create({
+      data: { ...post, lessorId: 'asd' },
+    });
+    return result;
   }
 
   async getPost() {}
