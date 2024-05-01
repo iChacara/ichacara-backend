@@ -48,10 +48,10 @@ model Post {
   title            String
   description      String
   routeInstruction String
-  Address          String
-  Street           String
-  District         String
-  City             String
+  address          String
+  street           String
+  district         String
+  city             String
   UF               String
   CEP              String
   images           Json
