@@ -48,7 +48,7 @@ model Post {
   title            String
   description      String
   routeInstruction String
-  address          String
+  number           String
   street           String
   district         String
   city             String

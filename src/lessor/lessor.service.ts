@@ -1,74 +1,62 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { UpdateLessorDTO } from './dto/update-lessor.dto';
-import { LessorDTO } from './dto/lessor.dto';
 import { PrismaService } from 'src/_database/prisma.service';
+import { Lessor } from '@prisma/client';
 
 @Injectable()
 export class LessorService {
-  private readonly logger = new Logger(LessorService.name); // Logger para rastrear ações
+  private readonly logger = new Logger(LessorService.name);
 
-  constructor(private readonly prisma: PrismaService) {} // Injeção do PrismaService
+  constructor(private readonly prisma: PrismaService) {}
 
-  // Criar um novo Lessor
-  async createLessor(lessorDTO: LessorDTO): Promise<LessorDTO> {
-    this.logger.log('Criando um novo Lessor'); // Log para rastrear ações
-    const newLessor = await this.prisma.lessor.create({
-      data: {
-        lessorDTO,
-      },
+  async createLessor(lessorDTO: any): Promise<Lessor> {
+    this.logger.log('Criando um novo Lessor');
+    const lessorCreated = await this.prisma.lessor.create({
+      data: lessorDTO,
     });
-    return newLessor;
+    return lessorCreated;
   }
 
-  // Obter todos os Lessors
-  async getAllLessors(): Promise<LessorDTO[]> {
-    this.logger.log('Recuperando todos os Lessors'); // Log para rastrear ações
+  async getAllLessors(): Promise<Lessor[]> {
+    this.logger.log('Recuperando todos os Lessors');
     const lessors = await this.prisma.lessor.findMany();
     return lessors;
   }
 
-  // Obter um Lessor pelo ID
-  async getLessorById(id: string): Promise<LessorDTO> {
-    this.logger.log(`Recuperando Lessor pelo ID: ${id}`); // Log para rastrear ações
+  async getLessorById(id: string): Promise<Lessor> {
+    this.logger.log(`Recuperando Lessor pelo ID: ${id}`);
     const lessor = await this.prisma.lessor.findUnique({
       where: { id },
     });
 
     if (!lessor) {
-      throw new NotFoundException(`Lessor com ID ${id} não encontrado`); // Exceção se não encontrado
+      throw new NotFoundException(`Lessor com ID ${id} não encontrado`);
     }
 
     return lessor;
   }
 
-  // Atualizar um Lessor pelo ID
-  async updateLessor(
-    id: string,
-    updateLessorDTO: UpdateLessorDTO,
-  ): Promise<LessorDTO> {
-    this.logger.log(`Atualizando Lessor pelo ID: ${id}`); // Log para rastrear ações
+  async updateLessor(id: string, updateLessorDTO: any): Promise<Lessor> {
+    this.logger.log(`Atualizando Lessor pelo ID: ${id}`);
     const updatedLessor = await this.prisma.lessor.update({
       where: { id },
       data: {
         userId: updateLessorDTO.userId,
-        post: {
-          connect: updateLessorDTO.postIds?.map((id) => ({ id })),
-        },
+        ...updateLessorDTO,
       },
     });
 
     if (!updatedLessor) {
       throw new NotFoundException(
         `Lessor com ID ${id} não encontrado para atualização`,
-      ); // Exceção se não encontrado
+      );
     }
 
     return updatedLessor;
   }
 
-  // Excluir um Lessor pelo ID
   async deleteLessor(id: string): Promise<void> {
-    this.logger.log(`Excluindo Lessor pelo ID: ${id}`); // Log para rastrear ações
+    this.logger.log(`Excluindo Lessor pelo ID: ${id}`);
     const lessor = await this.prisma.lessor.findUnique({
       where: { id },
     });
@@ -76,7 +64,7 @@ export class LessorService {
     if (!lessor) {
       throw new NotFoundException(
         `Lessor com ID ${id} não encontrado para exclusão`,
-      ); // Exceção se não encontrado
+      );
     }
 
     await this.prisma.lessor.delete({

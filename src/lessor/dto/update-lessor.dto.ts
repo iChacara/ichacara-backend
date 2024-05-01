@@ -1,24 +1,12 @@
-import { IsUUID, IsOptional, IsArray, IsDate } from 'class-validator';
+import { IsUUID, IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger'; // Para documentação
 
 export class UpdateLessorDTO {
-  @IsOptional()
-  @IsUUID() // Opcional porque as atualizações podem não incluir este campo
-  userId?: string; // ID do usuário, identificador único
-
-  @IsOptional()
-  @IsArray()
-  @IsUUID('4', { each: true }) // Garante UUID para cada item no array
-  postIds?: string[]; // Array de IDs de Post associados
-
-  @IsOptional()
-  @IsDate() // Opcional, definido pelo servidor se necessário
-  createdAt?: Date;
-
-  @IsOptional()
-  @IsDate()
-  deletedAt?: Date;
-
-  @IsOptional()
-  @IsDate()
-  updatedAt?: Date;
+  @ApiProperty({
+    description: 'ID do locador',
+    example: '52a09c36-40af-4dea-8cbf-d97368f23774', // Exemplo para Swagger
+  })
+  @IsUUID() // Validação para garantir que seja um UUID
+  @IsNotEmpty() // O campo é obrigatório
+  lessorId: string; // ID do locador que está sendo associado ao Locador
 }
