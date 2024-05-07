@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Query,
@@ -13,11 +14,13 @@ import { FormatedUser } from './user';
 import { UserService } from './user.service';
 import { AuthDTO } from './dto/auth.dto';
 import { Public } from '../guards/metadata';
+import { ApiParam, ApiTags } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @ApiTags('User')
   @Public()
   @Post()
   async post(@Body() body: CreateUserDTO): Promise<FormatedUser> {
@@ -26,6 +29,7 @@ export class UserController {
     return user;
   }
 
+  @ApiTags('User')
   @Public()
   @Post('/auth')
   async auth(@Body() body: AuthDTO): Promise<{ message: string; data: any }> {
@@ -34,28 +38,32 @@ export class UserController {
     return user;
   }
 
+  @ApiTags('User')
   @Get()
   async get(@Query() filters: GetUserDTO): Promise<FormatedUser[]> {
-    if (
-      filters.id === undefined &&
-      filters.email === undefined &&
-      filters.name === undefined
-    ) {
-      throw new NotFoundException('Nenhum parâmetro de filtro fornecido.');
-    }
-
     const users = await this.userService.getBy(filters);
 
     return users;
   }
 
-  @Put()
-  async put(@Body() body: AlterUserDTO): Promise<FormatedUser> {
-    const users = await this.userService.put(body);
+  @Put(':id')
+  @ApiTags('User')
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'ID único do usuário a ser atualizado.',
+    example: '9bce8538-de85-4f3d-a884-69014d0c1798',
+  })
+  async put(
+    @Param('id') id: string,
+    @Body() body: AlterUserDTO,
+  ): Promise<FormatedUser> {
+    const users = await this.userService.put(id, body);
 
     return users;
   }
 
+  @ApiTags('User')
   @Delete()
   async delete(@Query('id') id: string): Promise<FormatedUser> {
     const user = await this.userService.delete({ id: id });

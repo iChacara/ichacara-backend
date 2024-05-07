@@ -117,32 +117,13 @@ export class UserService {
     return this.formatUserReturn(users);
   }
 
-  async put(data: Partial<User>): Promise<FormatedUser> {
-    const { id } = data;
-    let search: FormatedUser;
-    try {
-      search = await this.getBy({ id: id })[0];
-    } catch (error) {
-      return error;
-    }
-
-    for (const [key, value] of Object.entries(search)) {
-      if (!(key in data)) {
-        data[key] = value;
-      }
-    }
-
+  async put(id: string, data: any): Promise<FormatedUser> {
     const user = await this.prisma.user.update({
-      where: { id: data.id },
-      data: {
-        id: data.id,
-        name: data.name,
-        email: data.email,
-        password: data.password,
-      },
+      where: { id },
+      data,
     });
 
-    return this.formatUserReturn(user)[0];
+    return this.formatUserReturn(user);
   }
 
   async delete(data: Partial<User>): Promise<FormatedUser> {
