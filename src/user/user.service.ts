@@ -36,7 +36,7 @@ export class UserService {
 
   async post(data: any): Promise<FormatedUser> {
     const uuid = randomUUID();
-    const user: User = { ...data, id: uuid };
+    const user: any = { ...data, id: uuid };
 
     const hasEmail = await this.getBy({ email: data.email });
 

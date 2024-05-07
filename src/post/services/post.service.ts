@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/_database/prisma.service';
-import { Post } from '@prisma/client';
+// import { Post } from '@prisma/client';
 
 @Injectable()
 export class PostService {
@@ -12,7 +12,7 @@ export class PostService {
   ) {}
 
   // usar o dto aqui não parece ser o mais correto, mas é um mal que estou
-  async createPost(post: Omit<Post, 'id' | 'lessorId'>) {
+  async createPost(post: any) {
     const result = await this.prisma.post.create({
       data: { ...post, lessorId: 'asd' },
     });

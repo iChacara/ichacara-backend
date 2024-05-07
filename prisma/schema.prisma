@@ -15,11 +15,10 @@ model User {
   id        String   @id @default(uuid())
   email     String   @unique
   name      String
-  fullName  String
   password  String
   createdAt DateTime @default(now())
-  deletedAt DateTime
-  updatedAt DateTime
+  deletedAt DateTime?
+  updatedAt DateTime?
   lessor    Lessor?
   lessee    Lessee?
 }

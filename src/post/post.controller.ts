@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { CreatePostDTO } from './dtos';
 import { PostService } from './services/post.service';
-import { Post as PostInterface } from '@prisma/client';
+// import { Post as PostInterface } from '@prisma/client';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('post')
@@ -43,23 +43,7 @@ export class PostController {
     },
   })
   async post(@Body() body: CreatePostDTO): Promise<any> {
-    const post: Omit<PostInterface, 'id' | 'lessorId'> = {
-      title: body.title,
-      description: body.description,
-      routeInstruction: body.routeInstruction,
-      address: body.address,
-      street: body.street,
-      district: body.district,
-      city: body.city,
-      UF: body.UF,
-      CEP: body.CEP,
-      images: body.images || [],
-      createdAt: null,
-      updatedAt: null,
-      deletedAt: null,
-    };
-
-    return this.postService.createPost(post);
+    return this.postService.createPost(body);
   }
 
   @Get()

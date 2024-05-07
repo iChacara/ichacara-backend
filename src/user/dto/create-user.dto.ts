@@ -25,14 +25,6 @@ export class CreateUserDTO {
   name: string; // Nome curto do usuário
 
   @ApiProperty({
-    description: 'Nome completo do usuário',
-    example: 'João da Silva', // Exemplo para Swagger
-  })
-  @IsString() // Deve ser uma string
-  @IsNotEmpty() // Campo obrigatório
-  fullName: string; // Nome completo do usuário
-
-  @ApiProperty({
     description: 'Senha do usuário',
     example: 'senha123', // Exemplo para Swagger
   })
