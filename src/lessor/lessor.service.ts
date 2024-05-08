@@ -1,7 +1,13 @@
-import { Injectable, NotFoundException, Logger } from '@nestjs/common';
-import { UpdateLessorDTO } from './dto/update-lessor.dto';
+import {
+  Injectable,
+  NotFoundException,
+  Logger,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { PrismaService } from 'src/_database/prisma.service';
 import { Lessor } from '@prisma/client';
+import { createLessorPrismaErrors } from './utils/constants';
 
 @Injectable()
 export class LessorService {
@@ -10,65 +16,89 @@ export class LessorService {
   constructor(private readonly prisma: PrismaService) {}
 
   async createLessor(lessorDTO: any): Promise<Lessor> {
-    this.logger.log('Criando um novo Lessor');
-    const lessorCreated = await this.prisma.lessor.create({
-      data: lessorDTO,
-    });
-    return lessorCreated;
+    try {
+      const lessorCreated = await this.prisma.lessor.create({
+        data: lessorDTO,
+      });
+      this.logger.log('Locador criado: ', lessorCreated.id);
+      return lessorCreated;
+    } catch (e: any) {
+      this.logger.log({
+        level: 'error',
+        message: 'Erro ao criar usuário: ' + e.code,
+      });
+      if (createLessorPrismaErrors[e.code]) {
+        createLessorPrismaErrors[e.code]();
+      }
+      createLessorPrismaErrors['DEFAULT_ERROR']();
+    }
   }
 
   async getAllLessors(): Promise<Lessor[]> {
-    this.logger.log('Recuperando todos os Lessors');
-    const lessors = await this.prisma.lessor.findMany();
-    return lessors;
+    try {
+      this.logger.log('Locadores listados');
+      const lessors = await this.prisma.lessor.findMany();
+      return lessors;
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new HttpException(
+          'Não foi possível listar locadores',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
   }
 
   async getLessorById(id: string): Promise<Lessor> {
-    this.logger.log(`Recuperando Lessor pelo ID: ${id}`);
-    const lessor = await this.prisma.lessor.findUnique({
-      where: { id },
-    });
+    try {
+      this.logger.log(`Recuperando Lessor pelo ID: ${id}`);
+      const lessor = await this.prisma.lessor.findUniqueOrThrow({
+        where: { id },
+      });
 
-    if (!lessor) {
-      throw new NotFoundException(`Lessor com ID ${id} não encontrado`);
+      console.log(lessor);
+      return lessor;
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new HttpException('Locador não encontrado', HttpStatus.NOT_FOUND);
+      }
     }
-
-    return lessor;
   }
 
-  async updateLessor(id: string, updateLessorDTO: any): Promise<Lessor> {
-    this.logger.log(`Atualizando Lessor pelo ID: ${id}`);
-    const updatedLessor = await this.prisma.lessor.update({
-      where: { id },
-      data: {
-        userId: updateLessorDTO.userId,
-        ...updateLessorDTO,
-      },
-    });
+  // async updateLessor(id: string, updateLessorDTO: any): Promise<Lessor> {
+  //   this.logger.log(`Atualizando Lessor pelo ID: ${id}`);
+  //   const updatedLessor = await this.prisma.lessor.update({
+  //     where: { id },
+  //     data: {
+  //       userId: updateLessorDTO.userId,
+  //       ...updateLessorDTO,
+  //     },
+  //   });
 
-    if (!updatedLessor) {
-      throw new NotFoundException(
-        `Lessor com ID ${id} não encontrado para atualização`,
-      );
+  //   if (!updatedLessor) {
+  //     throw new NotFoundException(
+  //       `Lessor com ID ${id} não encontrado para atualização`,
+  //     );
+  //   }
+
+  //   return updatedLessor;
+  // }
+
+  async deleteLessor(id: string): Promise<any> {
+    try {
+      await this.prisma.lessor.update({
+        data: {
+          deletedAt: new Date(),
+        },
+        where: { id, deletedAt: null },
+      });
+      this.logger.log(`Locador com id ${id} excluído`);
+
+      return { message: 'Conta de locador excluída com sucesso' };
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new HttpException('Locador não encontrado', HttpStatus.NOT_FOUND);
+      }
     }
-
-    return updatedLessor;
-  }
-
-  async deleteLessor(id: string): Promise<void> {
-    this.logger.log(`Excluindo Lessor pelo ID: ${id}`);
-    const lessor = await this.prisma.lessor.findUnique({
-      where: { id },
-    });
-
-    if (!lessor) {
-      throw new NotFoundException(
-        `Lessor com ID ${id} não encontrado para exclusão`,
-      );
-    }
-
-    await this.prisma.lessor.delete({
-      where: { id },
-    });
   }
 }
