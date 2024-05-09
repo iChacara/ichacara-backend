@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  Logger,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from 'src/_database/prisma.service';
 import { Lessor } from '@prisma/client';
 import { createLessorPrismaErrors } from './utils/constants';
@@ -15,13 +9,13 @@ export class LessorService {
 
   constructor(private readonly prisma: PrismaService) {}
 
-  async createLessor(lessorDTO: any): Promise<Lessor> {
+  async createLessor(lessorDTO: any): Promise<any> {
     try {
       const lessorCreated = await this.prisma.lessor.create({
         data: lessorDTO,
       });
       this.logger.log('Locador criado: ', lessorCreated.id);
-      return lessorCreated;
+      return { message: 'Conta de locador escolhida com sucesso!' };
     } catch (e: any) {
       this.logger.log({
         level: 'error',
@@ -40,12 +34,10 @@ export class LessorService {
       const lessors = await this.prisma.lessor.findMany();
       return lessors;
     } catch (error) {
-      if (error.code === 'P2002') {
-        throw new HttpException(
-          'Não foi possível listar locadores',
-          HttpStatus.INTERNAL_SERVER_ERROR,
-        );
-      }
+      throw new HttpException(
+        'Não foi possível listar locadores',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -56,7 +48,6 @@ export class LessorService {
         where: { id },
       });
 
-      console.log(lessor);
       return lessor;
     } catch (error) {
       if (error.code === 'P2025') {

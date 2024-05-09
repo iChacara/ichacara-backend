@@ -5,10 +5,17 @@ import { PostController } from './post/post.controller';
 import { PostModule } from './post/post.module';
 import { LessorModule } from './lessor/lessor.module';
 import { LessorController } from './lessor/lessor.controller';
+import { LesseeModule } from './lessee/lessee.module';
+import { LesseeController } from './lessee/lessee.controller';
 
 @Module({
-  imports: [UserModule, PostModule, LessorModule],
-  controllers: [UserController, PostController, LessorController],
+  imports: [UserModule, PostModule, LessorModule, LesseeModule],
+  controllers: [
+    UserController,
+    PostController,
+    LessorController,
+    LesseeController,
+  ],
   providers: [Logger],
 })
 export class AppModule {}

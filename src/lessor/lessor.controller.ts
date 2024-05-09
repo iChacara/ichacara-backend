@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Put,
   Delete,
   Param,
   Body,
@@ -10,7 +9,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { LessorService } from './lessor.service';
-import { UpdateLessorDTO } from './dto/update-lessor.dto';
 import { CreateLessorDTO } from './dto/create-lessor.dto';
 import { ApiTags } from '@nestjs/swagger';
 
