@@ -11,6 +11,7 @@ import { CreatePostDTO } from './dtos';
 import { PostService } from './services/post.service';
 // import { Post as PostInterface } from '@prisma/client';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreateBucketCommand, S3Client } from '@aws-sdk/client-s3';
 
 @Controller('post')
 export class PostController {
@@ -43,7 +44,22 @@ export class PostController {
     },
   })
   async post(@Body() body: CreatePostDTO): Promise<any> {
-    return this.postService.createPost(body);
+    body;
+    const s3 = new S3Client({
+      endpoint: 'http://localstack-main:4566', // ou o IP do Docker se necessário
+      region: 'us-east-1',
+      credentials: {
+        accessKeyId: 'S3RVER',
+        secretAccessKey: 'S3RVER',
+      },
+      forcePathStyle: true,
+    });
+    const command = new CreateBucketCommand({
+      Bucket: 'meu-novo-bucket',
+      ACL: 'public-read',
+    });
+    await s3.send(command);
+    console.log('Bucket criado com sucesso!');
   }
 
   @Get()
