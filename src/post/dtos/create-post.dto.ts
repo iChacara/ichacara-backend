@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsArray, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 
 export class CreatePostDTO {
   @ApiProperty({ description: 'O título do post' })
@@ -49,14 +49,4 @@ export class CreatePostDTO {
   @IsNotEmpty()
   @IsString()
   CEP: string;
-
-  @ApiProperty({
-    description: 'Conjunto de URLs de imagens para o post',
-    required: false,
-    type: 'array',
-    items: { type: 'string' },
-  })
-  @IsOptional()
-  @IsArray()
-  images: string[];
 }

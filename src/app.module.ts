@@ -7,9 +7,16 @@ import { LessorModule } from './lessor/lessor.module';
 import { LessorController } from './lessor/lessor.controller';
 import { LesseeModule } from './lessee/lessee.module';
 import { LesseeController } from './lessee/lessee.controller';
+import { NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
-  imports: [UserModule, PostModule, LessorModule, LesseeModule],
+  imports: [
+    UserModule,
+    PostModule,
+    LessorModule,
+    LesseeModule,
+    NestjsFormDataModule,
+  ],
   controllers: [
     UserController,
     PostController,
