@@ -12,7 +12,7 @@ services:
         condition: service_healthy
     command: ['npm', 'run', 'start:dev']
     volumes:
-      - ./src:/usr/src/app/src
+      - ./:/usr/src/app
       - /usr/src/app/node_modules
 
   db:
@@ -51,19 +51,23 @@ services:
     volumes:
       - ./data/pgadmin:/var/lib/pgadmin
 
-  localstack:
-    container_name: localstack-main
-    image: localstack/localstack
+  minio:
+    image: docker.io/bitnami/minio:2023
+    container_name: minio
     ports:
-      - '127.0.0.1:4566:4566'
-      - '127.0.0.1:4510-4559:4510-4559'
-    environment:
-      - SERVICES=s3
-      - AWS_DEFAULT_REGION=us-east-1
+      - '9000:9000'
+      - '9001:9001'
     volumes:
-      - '${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack'
-      - '/var/run/docker.sock:/var/run/docker.sock'
+      - 'minio_data:/data'
+    environment:
+      - MINIO_ROOT_USER=${MINIO_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_PASS}
+      - MINIO_DEFAULT_BUCKETS=${AWS_BUCKET_NAME}
+      - MINIO_REGION_NAME=sa-east-1
 
 volumes:
   postgres-data:
     name: postgres-data
+
+  minio_data:
+    driver: local

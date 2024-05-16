@@ -6,108 +6,77 @@ import {
   Param,
   Post,
   Put,
-  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
 import { CreatePostDTO } from './dtos';
 import { PostService } from './services/post.service';
-import {
-  ApiBody,
-  ApiConsumes,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import 'multer';
 import { FormDataRequest } from 'nestjs-form-data';
-
+import { S3Service } from '../services/s3.service';
 @Controller('post')
 export class PostController {
-  constructor(private postService: PostService) {}
+  constructor(
+    private postService: PostService,
+    private s3Service: S3Service,
+  ) {}
 
   @Post()
   @ApiTags('Post')
   @ApiOperation({ summary: 'Create a new post' })
-  @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Image file and post creation data',
     schema: {
       type: 'object',
       properties: {
-        images: {
-          type: 'array',
-          items: {
-            type: 'string',
-            format: 'binary',
-          },
+        title: { type: 'string', example: 'Casa à Venda' },
+        description: {
+          type: 'string',
+          example: 'Excelente casa em um bairro tranquilo',
         },
-        data: {
-          type: 'object',
-          properties: {
-            title: { type: 'string', example: 'Casa à Venda' },
-            description: {
-              type: 'string',
-              example: 'Excelente casa em um bairro tranquilo',
-            },
-            routeInstruction: {
-              type: 'string',
-              example: 'Perto da escola primária, vire à direita no semáforo',
-            },
-            address: { type: 'string', example: '123, Rua das Flores' },
-            street: { type: 'string', example: 'Rua das Flores' },
-            district: { type: 'string', example: 'Jardim das Rosas' },
-            city: { type: 'string', example: 'Cidade Nova' },
-            UF: { type: 'string', example: 'SP' },
-            CEP: { type: 'string', example: '12345-678' },
-          },
+        routeInstruction: {
+          type: 'string',
+          example: 'Perto da escola primária, vire à direita no semáforo',
         },
+        address: { type: 'string', example: '123, Rua das Flores' },
+        street: { type: 'string', example: 'Rua das Flores' },
+        district: { type: 'string', example: 'Jardim das Rosas' },
+        city: { type: 'string', example: 'Cidade Nova' },
+        UF: { type: 'string', example: 'SP' },
+        CEP: { type: 'string', example: '12345-678' },
       },
     },
   })
   @UseInterceptors(FilesInterceptor('images'))
   @FormDataRequest()
-  async post(
-    @Body() body: CreatePostDTO,
-    @UploadedFiles()
-    images: Express.Multer.File[],
-  ): Promise<any> {
+  async post(@Body() body: CreatePostDTO): Promise<any> {
     try {
-      return;
       const createdPost = this.postService.createPost(body);
-      console.log({ createdPost });
-
-      const uploadedImagesKeys: string[] = [];
-      for (const image of images) {
-        const extension_aux = image.originalname.split('.');
-        const extension = extension_aux[extension_aux.length - 1];
-        const key = `post/${Date.now()}-uuid-do-post-criado.${extension}`;
-
-        const s3 = new S3Client({
-          endpoint: 'http://localstack-main:4566', // ou o IP do Docker se necessário
-          region: 'us-east-1',
-          credentials: {
-            accessKeyId: 'S3RVER',
-            secretAccessKey: 'S3RVER',
-          },
-          forcePathStyle: true,
-        });
-        const command = new PutObjectCommand({
-          Bucket: 'ichacara',
-          Key: key,
-          Body: image.buffer,
-        });
-        const result = await s3.send(command);
-        if (result.$metadata.httpStatusCode === 200) {
-          uploadedImagesKeys.push(key);
-        }
-      }
-      console.log({ uploadedImagesKeys });
-
+      console.log(createdPost);
       return;
     } catch (e) {
       console.error({ e });
+    }
+  }
+
+  @Post('load')
+  @FormDataRequest()
+  async getHello(@Body() testDto: any): Promise<any> {
+    try {
+      console.log(testDto.images[0].originalName);
+      const result = await this.s3Service.uploadFile(
+        testDto.images[0].buffer,
+        'png',
+        'lessor-50/post-30',
+      );
+      if (result.success) {
+        return {
+          message: 'Imagens submetidas com sucesso!',
+        };
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 

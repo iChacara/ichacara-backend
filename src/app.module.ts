@@ -8,6 +8,7 @@ import { LessorController } from './lessor/lessor.controller';
 import { LesseeModule } from './lessee/lessee.module';
 import { LesseeController } from './lessee/lessee.controller';
 import { NestjsFormDataModule } from 'nestjs-form-data';
+import { S3Service } from './services/s3.service';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
     LessorController,
     LesseeController,
   ],
-  providers: [Logger],
+  providers: [Logger, S3Service],
 })
 export class AppModule {}
