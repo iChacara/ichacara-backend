@@ -94,7 +94,7 @@ export class PostService {
   async deletePost(id: string) {
     let message = 'Anúncio excluído com sucesso';
     try {
-      await this.prisma.lessee.update({
+      await this.prisma.post.update({
         data: {
           deletedAt: new Date(),
         },
