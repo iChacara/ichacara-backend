@@ -7,12 +7,13 @@ import {
   IsJSON,
 } from 'class-validator';
 
-export class CreatePostDTO {
+export class UpdatePostDTO {
   @ApiProperty({
     description: 'O título do post',
     example: 'Casa aconchegante em São Paulo',
   })
   @IsNotEmpty()
+  @IsOptional()
   @IsString()
   title: string;
 
@@ -38,6 +39,7 @@ export class CreatePostDTO {
     example: '123',
   })
   @IsNotEmpty()
+  @IsOptional()
   @IsString()
   number: string;
 
@@ -46,6 +48,7 @@ export class CreatePostDTO {
     example: 'Rua das Flores',
   })
   @IsNotEmpty()
+  @IsOptional()
   @IsString()
   street: string;
 
@@ -54,6 +57,7 @@ export class CreatePostDTO {
     example: 'Centro',
   })
   @IsNotEmpty()
+  @IsOptional()
   @IsString()
   district: string;
 
@@ -62,6 +66,7 @@ export class CreatePostDTO {
     example: 'São Paulo',
   })
   @IsNotEmpty()
+  @IsOptional()
   @IsString()
   city: string;
 
@@ -70,6 +75,7 @@ export class CreatePostDTO {
     example: 'SP',
   })
   @IsNotEmpty()
+  @IsOptional()
   @IsString()
   UF: string;
 
@@ -79,6 +85,7 @@ export class CreatePostDTO {
     required: false,
   })
   @IsOptional()
+  @IsOptional()
   @IsString()
   CEP: string;
 
@@ -87,6 +94,7 @@ export class CreatePostDTO {
     example: 'Apto 101',
     required: false,
   })
+  @IsOptional()
   @IsOptional()
   @IsString()
   complement: string;
@@ -98,6 +106,7 @@ export class CreatePostDTO {
     required: false,
   })
   @IsOptional()
+  @IsOptional()
   @IsJSON()
   images: string;
 
@@ -106,6 +115,15 @@ export class CreatePostDTO {
     example: '07dbad2d-5ee2-4fd6-ab08-f4fb24fcff8b',
   })
   @IsUUID()
+  @IsOptional()
   @IsNotEmpty()
   lessorId: string;
+
+  @ApiProperty({
+    description: 'Status do anúncio',
+    example: 'active',
+  })
+  @IsOptional()
+  @IsString()
+  status: string;
 }

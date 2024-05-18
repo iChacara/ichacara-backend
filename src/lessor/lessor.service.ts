@@ -1,7 +1,7 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from 'src/_database/prisma.service';
 import { Lessor } from '@prisma/client';
-import { createLessorPrismaErrors } from './utils/constants';
+import { createLessorPrismaErrors } from '../utils/constants';
 
 @Injectable()
 export class LessorService {

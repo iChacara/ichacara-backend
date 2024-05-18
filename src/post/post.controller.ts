@@ -6,78 +6,21 @@ import {
   Param,
   Post,
   Put,
-  UseInterceptors,
 } from '@nestjs/common';
 import { CreatePostDTO } from './dtos';
 import { PostService } from './services/post.service';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { FilesInterceptor } from '@nestjs/platform-express';
 import 'multer';
-import { FormDataRequest } from 'nestjs-form-data';
-import { S3Service } from '../services/s3.service';
+import { UpdatePostDTO } from './dtos/update-post.dto';
 @Controller('post')
 export class PostController {
-  constructor(
-    private postService: PostService,
-    private s3Service: S3Service,
-  ) {}
+  constructor(private postService: PostService) {}
 
   @Post()
   @ApiTags('Post')
   @ApiOperation({ summary: 'Create a new post' })
-  @ApiBody({
-    description: 'Image file and post creation data',
-    schema: {
-      type: 'object',
-      properties: {
-        title: { type: 'string', example: 'Casa à Venda' },
-        description: {
-          type: 'string',
-          example: 'Excelente casa em um bairro tranquilo',
-        },
-        routeInstruction: {
-          type: 'string',
-          example: 'Perto da escola primária, vire à direita no semáforo',
-        },
-        address: { type: 'string', example: '123, Rua das Flores' },
-        street: { type: 'string', example: 'Rua das Flores' },
-        district: { type: 'string', example: 'Jardim das Rosas' },
-        city: { type: 'string', example: 'Cidade Nova' },
-        UF: { type: 'string', example: 'SP' },
-        CEP: { type: 'string', example: '12345-678' },
-      },
-    },
-  })
-  @UseInterceptors(FilesInterceptor('images'))
-  @FormDataRequest()
   async post(@Body() body: CreatePostDTO): Promise<any> {
-    try {
-      const createdPost = this.postService.createPost(body);
-      console.log(createdPost);
-      return;
-    } catch (e) {
-      console.error({ e });
-    }
-  }
-
-  @Post('load')
-  @FormDataRequest()
-  async getHello(@Body() testDto: any): Promise<any> {
-    try {
-      console.log(testDto.images[0].originalName);
-      const result = await this.s3Service.uploadFile(
-        testDto.images[0].buffer,
-        'png',
-        'lessor-50/post-30',
-      );
-      if (result.success) {
-        return {
-          message: 'Imagens submetidas com sucesso!',
-        };
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    return this.postService.createPost(body);
   }
 
   @Get()
@@ -86,8 +29,8 @@ export class PostController {
   @ApiResponse({ status: 200, description: 'Posts retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  async getAllPosts(): Promise<boolean> {
-    return true;
+  async getAllPosts(): Promise<any> {
+    return this.postService.getAllPosts();
   }
 
   @Get(':id')
@@ -97,9 +40,8 @@ export class PostController {
   @ApiResponse({ status: 400, description: 'Invalid ID' })
   @ApiResponse({ status: 404, description: 'Post not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async getPostById(@Param('id') id: string): Promise<boolean> {
-    id;
-    return true;
+  async getPostById(@Param('id') id: string): Promise<any> {
+    return this.postService.getPost(id);
   }
 
   @Put(':id')
@@ -131,11 +73,9 @@ export class PostController {
   })
   async updatePost(
     @Param('id') id: string,
-    @Body() body: CreatePostDTO,
-  ): Promise<boolean> {
-    id;
-    body;
-    return true;
+    @Body() body: UpdatePostDTO,
+  ): Promise<any> {
+    return this.postService.updatePost(id, body);
   }
 
   @Delete(':id')
@@ -144,8 +84,7 @@ export class PostController {
   @ApiResponse({ status: 200, description: 'Post deleted successfully' })
   @ApiResponse({ status: 404, description: 'Post not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  async deletePost(@Param('id') id: string): Promise<boolean> {
-    id;
-    return true;
+  async deletePost(@Param('id') id: string): Promise<any> {
+    return this.postService.deletePost(id);
   }
 }

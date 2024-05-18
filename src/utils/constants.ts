@@ -20,3 +20,8 @@ export const createLessorPrismaErrors = {
     );
   },
 };
+
+export const POST_STATUS = {
+  inactive: '1',
+  active: '2',
+};

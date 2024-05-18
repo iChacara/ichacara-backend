@@ -43,20 +43,22 @@ model Lessee {
 }
 
 model Post {
-  id               String   @id @default(uuid())
+  id               String    @id @default(uuid())
   title            String
   description      String
-  routeInstruction String
+  routeInstruction String?
   number           String
   street           String
   district         String
   city             String
   UF               String
-  CEP              String
-  images           Json
-  createdAt        DateTime @default(now())
-  deletedAt        DateTime
-  updatedAt        DateTime
-  lessor           Lessor   @relation(fields: [lessorId], references: [id])
+  CEP              String?
+  complement       String?
+  images           Json?
+  createdAt        DateTime  @default(now())
+  deletedAt        DateTime?
+  updatedAt        DateTime?
+  lessor           Lessor    @relation(fields: [lessorId], references: [id])
+  status           String    @default("1")
   lessorId         String
 }
