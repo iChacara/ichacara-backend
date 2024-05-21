@@ -9,13 +9,15 @@ import { LesseeModule } from './lessee/lessee.module';
 import { LesseeController } from './lessee/lessee.controller';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { S3Service } from './services/s3.service';
-
+import { AppointmentModule } from './appointment/appointment.module';
+import { AppointmentController } from './appointment/appointment.controller';
 @Module({
   imports: [
     UserModule,
     PostModule,
     LessorModule,
     LesseeModule,
+    AppointmentModule,
     NestjsFormDataModule,
   ],
   controllers: [
@@ -23,6 +25,7 @@ import { S3Service } from './services/s3.service';
     PostController,
     LessorController,
     LesseeController,
+    AppointmentController,
   ],
   providers: [Logger, S3Service],
 })

@@ -34,16 +34,17 @@ model Lessor {
 }
 
 model Lessee {
-  id        String    @id @default(uuid())
-  createdAt DateTime  @default(now())
-  deletedAt DateTime?
-  updatedAt DateTime?
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String    @unique
+  id          String        @id @default(uuid())
+  createdAt   DateTime      @default(now())
+  deletedAt   DateTime?
+  updatedAt   DateTime?
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String        @unique
+  Appointment Appointment[]
 }
 
 model Post {
-  id               String    @id @default(uuid())
+  id               String        @id @default(uuid())
   title            String
   description      String
   routeInstruction String?
@@ -55,10 +56,25 @@ model Post {
   CEP              String?
   complement       String?
   images           Json?
-  createdAt        DateTime  @default(now())
+  createdAt        DateTime      @default(now())
   deletedAt        DateTime?
   updatedAt        DateTime?
-  lessor           Lessor    @relation(fields: [lessorId], references: [id])
-  status           String    @default("1")
+  lessor           Lessor        @relation(fields: [lessorId], references: [id])
+  status           String        @default("1")
   lessorId         String
+  Appointment      Appointment[]
+}
+
+model Appointment {
+  id        String    @id @default(uuid())
+  startDate DateTime
+  endDate   DateTime
+  status    String    @default("pending")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  deletedAt DateTime?
+  post      Post      @relation(fields: [postId], references: [id])
+  postId    String
+  lessee    Lessee    @relation(fields: [lesseeId], references: [id])
+  lesseeId  String
 }
