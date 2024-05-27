@@ -66,15 +66,19 @@ model Post {
 }
 
 model Appointment {
-  id        String    @id @default(uuid())
-  startDate DateTime
-  endDate   DateTime
-  status    String    @default("pending")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime?
-  deletedAt DateTime?
-  post      Post      @relation(fields: [postId], references: [id])
-  postId    String
-  lessee    Lessee    @relation(fields: [lesseeId], references: [id])
-  lesseeId  String
+  id            String    @id @default(uuid())
+  startDate     DateTime
+  endDate       DateTime
+  type          String
+  paymentStatus String?
+  price         Float?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime?
+  deletedAt     DateTime?
+
+  postId   String
+  lesseeId String
+
+  post   Post   @relation(fields: [postId], references: [id])
+  lessee Lessee @relation(fields: [lesseeId], references: [id])
 }

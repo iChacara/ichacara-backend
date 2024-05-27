@@ -1,18 +1,19 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PrismaService } from 'src/_database/prisma.service';
-import { CreateAppointmentDTO } from '../dtos/create-appointment.dto';
 import { UpdateAppointmentDTO } from '../dtos/update-appointment.dto';
 
 @Injectable()
 export class AppointmentService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createAppointment(data: CreateAppointmentDTO) {
-    const { postId } = data;
-    const startDate = new Date(data.startDate);
-    const endDate = addOneHour(new Date(startDate));
+  async createAppointment(data: any) {
+    const { startDate, postId, type } = data;
+    const endDate =
+      type === 'visit'
+        ? addOneHour(new Date(startDate))
+        : addOneDay(new Date(startDate));
 
-    // Verificação de intervalo de 1 hora para criação
+    // Verificação de intervalo de 1 hora ou 1 dia para criação
     const conflictingAppointments = await this.prisma.appointment.findMany({
       where: {
         postId,
@@ -33,13 +34,19 @@ export class AppointmentService {
           {
             startDate: {
               lt: startDate,
-              gte: subtractOneHour(startDate),
+              gte:
+                type === 'visit'
+                  ? subtractOneHour(startDate)
+                  : subtractOneDay(startDate),
             },
           },
           {
             endDate: {
               lt: startDate,
-              gte: subtractOneHour(startDate),
+              gte:
+                type === 'visit'
+                  ? subtractOneHour(startDate)
+                  : subtractOneDay(startDate),
             },
           },
         ],
@@ -48,7 +55,7 @@ export class AppointmentService {
 
     if (conflictingAppointments.length > 0) {
       throw new HttpException(
-        'Já existe um agendamento para este post dentro do intervalo de 1 hora.',
+        `Já existe um agendamento do tipo ${type} para este post dentro do intervalo permitido.`,
         HttpStatus.CONFLICT,
       );
     }
@@ -56,8 +63,8 @@ export class AppointmentService {
     try {
       const result = await this.prisma.appointment.create({
         data: {
+          endDate,
           ...data,
-          endDate, // Definindo a endDate como uma hora após a startDate
         },
       });
       return result;
@@ -82,10 +89,13 @@ export class AppointmentService {
     }
   }
 
-  async getAllAppointments() {
+  async getAllAppointments(type?: 'visit' | 'rent') {
     try {
       const appointments = await this.prisma.appointment.findMany({
-        where: { deletedAt: null },
+        where: {
+          deletedAt: null,
+          ...(type ? { type } : {}),
+        },
       });
       return appointments;
     } catch (error) {
@@ -119,50 +129,63 @@ export class AppointmentService {
   }
 
   async updateAppointment(id: string, data: UpdateAppointmentDTO) {
-    const startDate = new Date(data.startDate);
-    const endDate = addOneHour(startDate);
+    const { startDate, postId, type } = data;
+    const endDate = startDate
+      ? type === 'visit'
+        ? addOneHour(new Date(startDate))
+        : addOneDay(new Date(startDate))
+      : undefined;
 
-    // Verificação de intervalo de 1 hora para atualização
-    const conflictingAppointments = await this.prisma.appointment.findMany({
-      where: {
-        deletedAt: null,
-        id: {
-          not: id,
+    if (startDate && postId) {
+      // Verificação de intervalo de 1 hora ou 1 dia para atualização
+      const conflictingAppointments = await this.prisma.appointment.findMany({
+        where: {
+          postId,
+          deletedAt: null,
+          id: {
+            not: id,
+          },
+          OR: [
+            {
+              startDate: {
+                lt: endDate,
+                gte: startDate,
+              },
+            },
+            {
+              endDate: {
+                lt: endDate,
+                gte: startDate,
+              },
+            },
+            {
+              startDate: {
+                lt: startDate,
+                gte:
+                  type === 'visit'
+                    ? subtractOneHour(startDate)
+                    : subtractOneDay(startDate),
+              },
+            },
+            {
+              endDate: {
+                lt: startDate,
+                gte:
+                  type === 'visit'
+                    ? subtractOneHour(startDate)
+                    : subtractOneDay(startDate),
+              },
+            },
+          ],
         },
-        OR: [
-          {
-            startDate: {
-              lt: endDate,
-              gte: startDate,
-            },
-          },
-          {
-            endDate: {
-              lt: endDate,
-              gte: startDate,
-            },
-          },
-          {
-            startDate: {
-              lt: startDate,
-              gte: subtractOneHour(startDate),
-            },
-          },
-          {
-            endDate: {
-              lt: startDate,
-              gte: subtractOneHour(startDate),
-            },
-          },
-        ],
-      },
-    });
+      });
 
-    if (conflictingAppointments.length > 0) {
-      throw new HttpException(
-        'Já existe um agendamento para este post dentro do intervalo de 1 hora.',
-        HttpStatus.CONFLICT,
-      );
+      if (conflictingAppointments.length > 0) {
+        throw new HttpException(
+          `Já existe um agendamento do tipo ${type} para este post dentro do intervalo permitido.`,
+          HttpStatus.CONFLICT,
+        );
+      }
     }
 
     try {
@@ -170,7 +193,7 @@ export class AppointmentService {
         where: { id },
         data: {
           ...data,
-          endDate, // Definindo a endDate como uma hora após a startDate
+          ...(endDate && { endDate }), // Definindo a endDate com base no tipo de agendamento
         },
       });
       return appointment;
@@ -201,7 +224,7 @@ export class AppointmentService {
         where: { id },
         data: { deletedAt: new Date() },
       });
-      return { message: 'Agendamento excluído com sucesso.' };
+      return { message: 'Agendamento excluído com sucesso' };
     } catch (error) {
       if (error.code === 'P2025') {
         throw new HttpException(
@@ -218,12 +241,22 @@ export class AppointmentService {
   }
 }
 
-// Funções utilitárias para manipulação de datas
 function addOneHour(date: Date): Date {
-  console.log(date.getTime());
+  date = new Date(date);
   return new Date(date.getTime() + 60 * 60 * 1000);
 }
 
 function subtractOneHour(date: Date): Date {
+  date = new Date(date);
   return new Date(date.getTime() - 60 * 60 * 1000);
+}
+
+function addOneDay(date: Date): Date {
+  date = new Date(date);
+  return new Date(date.getTime() + 24 * 60 * 60 * 1000);
+}
+
+function subtractOneDay(date: Date): Date {
+  date = new Date(date);
+  return new Date(date.getTime() - 24 * 60 * 60 * 1000);
 }

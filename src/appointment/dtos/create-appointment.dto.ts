@@ -1,36 +1,61 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsUUID, IsDateString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  IsDateString,
+  IsOptional,
+  IsNumber,
+  IsEnum,
+} from 'class-validator';
 
 export class CreateAppointmentDTO {
   @ApiProperty({
+    description: 'ID do usuário que está criando o agendamento',
+    example: 'user-id-example',
+  })
+  @IsNotEmpty()
+  @IsString()
+  userId: string;
+
+  @ApiProperty({
+    description: 'ID do post relacionado ao agendamento',
+    example: 'post-id-example',
+  })
+  @IsNotEmpty()
+  @IsString()
+  postId: string;
+
+  @ApiProperty({
     description: 'Data e hora de início do agendamento',
-    example: '2023-06-01T10:00:00.000Z',
+    example: '2023-07-20T14:00:00.000Z',
   })
   @IsNotEmpty()
   @IsDateString()
   startDate: Date;
 
   @ApiProperty({
-    description: 'Data e hora de término do agendamento',
-    example: '2023-06-01T12:00:00.000Z',
+    description: 'Tipo de agendamento: visit ou rent',
+    example: 'visit',
   })
   @IsNotEmpty()
-  @IsDateString()
-  endDate: Date;
+  @IsEnum(['visit', 'rent'])
+  type: 'visit' | 'rent';
 
   @ApiProperty({
-    description: 'ID do post associado ao agendamento',
-    example: '3eb71708-6154-4376-9ea2-a651df60773f',
+    description: 'Status do pagamento para aluguel',
+    example: 'paid',
+    required: false,
   })
-  @IsUUID()
-  @IsNotEmpty()
-  postId: string;
+  @IsOptional()
+  @IsString()
+  paymentStatus?: string;
 
   @ApiProperty({
-    description: 'ID do locatário associado ao agendamento',
-    example: 'aac00c01-899c-449f-8353-ac96446edfed',
+    description: 'Preço do aluguel',
+    example: 100.0,
+    required: false,
   })
-  @IsUUID()
-  @IsNotEmpty()
-  lesseeId: string;
+  @IsOptional()
+  @IsNumber()
+  price?: number;
 }

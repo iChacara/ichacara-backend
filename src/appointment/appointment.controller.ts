@@ -1,55 +1,46 @@
 import {
   Controller,
   Post,
-  Get,
-  Put,
-  Delete,
   Body,
+  Get,
   Param,
+  Patch,
+  Delete,
+  Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { AppointmentService } from './services/appointment.service';
 import { CreateAppointmentDTO } from './dtos/create-appointment.dto';
 import { UpdateAppointmentDTO } from './dtos/update-appointment.dto';
 
-@Controller('appointment')
-@ApiTags('Appointment')
+@Controller('appointments')
 export class AppointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create a new appointment' })
-  async createAppointment(
-    @Body() createAppointmentDTO: CreateAppointmentDTO,
-  ): Promise<any> {
-    console.log('AAAAAAAAAA');
+  async createAppointment(@Body() createAppointmentDTO: CreateAppointmentDTO) {
     return this.appointmentService.createAppointment(createAppointmentDTO);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all appointments' })
-  async getAllAppointments(): Promise<any> {
-    return this.appointmentService.getAllAppointments();
+  async getAllAppointments(@Query('type') type?: 'visit' | 'rent') {
+    return this.appointmentService.getAllAppointments(type);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get appointment by ID' })
-  async getAppointmentById(@Param('id') id: string): Promise<any> {
+  async getAppointmentById(@Param('id') id: string) {
     return this.appointmentService.getAppointmentById(id);
   }
 
-  @Put(':id')
-  @ApiOperation({ summary: 'Update appointment by ID' })
+  @Patch(':id')
   async updateAppointment(
     @Param('id') id: string,
     @Body() updateAppointmentDTO: UpdateAppointmentDTO,
-  ): Promise<any> {
+  ) {
     return this.appointmentService.updateAppointment(id, updateAppointmentDTO);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete appointment by ID' })
-  async deleteAppointment(@Param('id') id: string): Promise<any> {
+  async deleteAppointment(@Param('id') id: string) {
     return this.appointmentService.deleteAppointment(id);
   }
 }
