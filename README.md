@@ -17,7 +17,7 @@ $ docker compose up -d
 
 ```bash
 # Acessar container docker da api
-$ docker exec -it api
+$ docker exec -it api sh
 ```
 
 ```bash
@@ -44,3 +44,9 @@ $ aws configure --profile localstack
 # Default region name: us-east-1
 # Default output format: json
 ```
+
+## Technologies
+Nest.js, Prisma, Typescript
+
+## Frontend repository
+[ichacara-frontend](https://github.com/iChacara/ichacara-backend)
