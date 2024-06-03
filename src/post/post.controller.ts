@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { CreatePostDTO } from './dtos';
 import { PostService } from './services/post.service';
@@ -29,8 +30,8 @@ export class PostController {
   @ApiResponse({ status: 200, description: 'Posts retrieved successfully' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
-  async getAllPosts(): Promise<any> {
-    return this.postService.getAllPosts();
+  async getAllPosts(@Query('lessorId') lessorId: string): Promise<any> {
+    return this.postService.getAllPosts(lessorId);
   }
 
   @Get(':id')

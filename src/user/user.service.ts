@@ -105,7 +105,7 @@ export class UserService {
       `Login attempt successful - ${authData.email}`,
       this.SERVICE,
     );
-    return { message, data: { jwtToken } };
+    return { message, data: { jwtToken, userId: existentUser.id } };
   }
 
   async getBy(filters: Partial<User>): Promise<FormatedUser[]> {

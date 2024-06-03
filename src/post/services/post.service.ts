@@ -49,12 +49,12 @@ export class PostService {
     }
   }
 
-  async getAllPosts() {
+  async getAllPosts(lessorId) {
     let message = 'Anúncios listados com sucesso';
     try {
       this.logger.log(message);
       const post = await this.prisma.post.findMany({
-        where: { deletedAt: null, status: POST_STATUS.active },
+        where: { deletedAt: null, status: POST_STATUS.active, lessorId },
       });
       message = 'Anúncios listados com sucesso';
 
