@@ -11,11 +11,25 @@ export class LessorService {
 
   async createLessor(lessorDTO: any): Promise<any> {
     try {
+      const lessorExists = await this.prisma.lessor.findUnique({
+        where: { userId: lessorDTO.userId },
+      });
+
+      if (lessorExists) {
+        return {
+          message: 'Você já possui uma conta de locador!',
+          data: { lessorId: lessorExists.id },
+        };
+      }
+
       const lessorCreated = await this.prisma.lessor.create({
         data: lessorDTO,
       });
       this.logger.log('Locador criado: ', lessorCreated.id);
-      return { message: 'Conta de locador escolhida com sucesso!' };
+      return {
+        message: 'Conta de locador escolhida com sucesso!',
+        data: { lessorId: lessorCreated.id },
+      };
     } catch (e: any) {
       this.logger.log({
         level: 'error',

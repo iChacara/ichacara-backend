@@ -60,7 +60,7 @@ model Post {
   deletedAt        DateTime?
   updatedAt        DateTime?
   lessor           Lessor        @relation(fields: [lessorId], references: [id])
-  status           String        @default("1")
+  status           String        @default("2")
   lessorId         String
   Appointment      Appointment[]
 }
