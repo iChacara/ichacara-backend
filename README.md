@@ -49,4 +49,4 @@ $ aws configure --profile localstack
 Nest.js, Prisma, Typescript
 
 ## Frontend repository
-[ichacara-frontend](https://github.com/iChacara/ichacara-backend)
+[ichacara-frontend](https://github.com/iChacara/ichacara-frontend/tree/development)
