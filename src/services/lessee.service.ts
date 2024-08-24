@@ -1,25 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
-import * as bcrypt from 'bcrypt';
+import { UtilsService } from './utils.service';
 
 @Injectable()
 export class LesseeService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private utilsService: UtilsService) {}
 
   public async createLessee(lesseeData: { email: string; password: string }) {
-    const saltOrRounds = 10;
-    const hashedPassword = await bcrypt.hash(lesseeData.password, saltOrRounds);
-
-    return this.prisma.lessee.create({
-      data: {
-        user: {
-          create: {
-            email: lesseeData.email,
-            password: hashedPassword,
-            type: 'lessee',
-          },
-        },
-      },
-    });
+    return this.utilsService.createLessorOrLessee(lesseeData, 'lessee');
   }
 }
