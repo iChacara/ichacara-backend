@@ -1,19 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private jwtService: JwtService,
+  ) {}
 
   public async auth(loginData: { email: string; password: string }) {
     const user = await this.prismaService.user.findFirstOrThrow({
-      select: {
-        id: true,
-        password: true,
-      },
       where: {
         email: loginData.email,
+      },
+      include: {
+        lessee: true,
+        lessor: true,
       },
     });
 
@@ -28,5 +32,22 @@ export class UserService {
 
       throw error;
     }
+
+    const type = user.lessee ? 'lessee' : 'lessor';
+
+    return {
+      access_token: await this.jwtService.signAsync(
+        {
+          sub: user.id,
+          username: user.email,
+          type,
+        },
+        {
+          secret: process.env['JWT_SECRET'],
+          algorithm: 'HS256',
+          expiresIn: '1d',
+        },
+      ),
+    };
   }
 }

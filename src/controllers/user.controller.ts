@@ -22,6 +22,7 @@ export class UserController {
         data: authResult,
       };
     } catch (error) {
+        console.log(error);
       if (error.code === 'P2025') {
         throw new BadRequestException('E-mail ou senha incorretos');
       } else {
