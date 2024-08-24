@@ -21,9 +21,9 @@ email: maria-fernanda-dalla@tuamaeaquelaursa.com
 
 `docker run --rm -it -p 4566:4566 -p 4510-4559:4510-4559 localstack/localstack`
 
-*Criar o bucket AWS para armazenamento de arquivos estáticos*
+*Criar o bucket AWS para armazenamento de arquivos estáticos (necessário ter o aws cli instalado em sua máquina)*
 
-`awslocal s3api create-bucket --bucket sample-bucket`
+`aws --endpoint-url=http://localhost:4566 s3api create-bucket --bucket ichacara-dev --region us-east-1`
 
 ## Aplicação
 *Instalar dependências*
