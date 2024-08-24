@@ -8,6 +8,8 @@ import { LessorController } from './controllers/lessor.controller';
 import { UserService } from './services/user.service';
 import { UserController } from './controllers/user.controller';
 import { JwtService } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guards/auth.guard';
 
 @Module({
   imports: [],
@@ -18,7 +20,11 @@ import { JwtService } from '@nestjs/jwt';
     LessorService,
     UtilsService,
     UserService,
-    JwtService
+    JwtService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],
 })
 export class AppModule {}

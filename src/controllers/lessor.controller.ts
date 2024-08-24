@@ -7,11 +7,13 @@ import {
 } from '@nestjs/common';
 import { LessorService } from '../services/lessor.service';
 import { CreateLessorDTO } from 'src/dto/lessor.dto';
+import { Public } from 'src/constants/ispublic';
 
 @Controller('lessor')
 export class LessorController {
   constructor(private lessorService: LessorService) {}
 
+  @Public()
   @Post()
   async createLessor(@Body() lessor: CreateLessorDTO) {
     try {

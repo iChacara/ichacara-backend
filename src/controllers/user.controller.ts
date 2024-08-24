@@ -5,6 +5,7 @@ import {
   InternalServerErrorException,
   Post,
 } from '@nestjs/common';
+import { Public } from 'src/constants/ispublic';
 import { AuthDTO } from 'src/dto/auth.dto';
 import { UserService } from 'src/services/user.service';
 
@@ -12,6 +13,7 @@ import { UserService } from 'src/services/user.service';
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Public()
   @Post('auth')
   async auth(@Body() login: AuthDTO) {
     try {
@@ -22,9 +24,8 @@ export class UserController {
         data: authResult,
       };
     } catch (error) {
-        console.log(error);
       if (error.code === 'P2025') {
-        throw new BadRequestException('E-mail ou senha incorretos');
+        throw new BadRequestException('Autenticação feita com sucesso');
       } else {
         throw new InternalServerErrorException(
           'Algum erro inesperado aconteceu, tente novamente mais tarde',
