@@ -9,7 +9,9 @@ export class S3ManagerService {
 
   private bucket = process.env['AWS_BUCKET_NAME'] ?? 'ichacara-dev';
 
-  async putObject({ key: key }) {
-    return await this.s3.putObject({ Bucket: this.bucket, Key: key }).promise();
+  async putObject({ key, stream }) {
+    return await this.s3
+      .putObject({ Bucket: this.bucket, Key: key, Body: stream })
+      .promise();
   }
 }

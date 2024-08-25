@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { readFileSync, rmSync, writeFileSync } from 'fs';
+import { S3ManagerService } from './s3-manager.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private prismaService: PrismaService,
     private jwtService: JwtService,
+    private s3ManagerService: S3ManagerService,
   ) {}
 
   public async auth(loginData: { email: string; password: string }) {
@@ -49,5 +52,20 @@ export class UserService {
         },
       ),
     };
+  }
+
+  public async uploadProfilePicture(file: any) {
+    const filePath = 'temp/' + file.originalname;
+
+    writeFileSync(filePath, file.buffer);
+
+    await this.s3ManagerService.putObject({
+      key: Date.now().toString(),
+      stream: readFileSync(filePath),
+    });
+
+    rmSync(filePath);
+
+    return 'Imagem criada!';
   }
 }

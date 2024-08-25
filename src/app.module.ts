@@ -24,6 +24,7 @@ import { S3ManagerModule } from './modules/s3-manager.module';
           profile: 'localstack',
         }),
         endpoint: 'http://localhost:4566',
+        s3ForcePathStyle: true,
       },
       services: [S3],
     }),
