@@ -8,30 +8,31 @@ generator client {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  email    String   @unique
-  password String
-  type     String
-  lessee   Lessee?
-  lessor   Lessor?
+  id             Int     @id @default(autoincrement())
+  email          String  @unique
+  password       String
+  type           String
+  profilePicture String?
+  lessee         Lessee?
+  lessor         Lessor?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Lessee {
-  id      Int  @id @default(autoincrement())
-  userId  Int  @unique
-  user    User @relation(fields: [userId], references: [id])
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Lessor {
-  id      Int  @id @default(autoincrement())
-  userId  Int  @unique
-  user    User @relation(fields: [userId], references: [id])
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

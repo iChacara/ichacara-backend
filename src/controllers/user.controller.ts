@@ -7,11 +7,15 @@ import {
 } from '@nestjs/common';
 import { Public } from 'src/constants/ispublic';
 import { AuthDTO } from 'src/dto/auth.dto';
+import { S3ManagerService } from 'src/services/s3-manager.service';
 import { UserService } from 'src/services/user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private s3ManagerService: S3ManagerService,
+  ) {}
 
   @Public()
   @Post('auth')
@@ -31,6 +35,16 @@ export class UserController {
           'Algum erro inesperado aconteceu, tente novamente mais tarde',
         );
       }
+    }
+  }
+
+  @Public()
+  @Post('profile-picture')
+  async submitProfilePicture() {
+    try {
+      return this.s3ManagerService.putObject({ key: Date.now().toString() });
+    } catch (error) {
+      console.log(error);
     }
   }
 }
