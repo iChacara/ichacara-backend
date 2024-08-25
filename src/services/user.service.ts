@@ -54,17 +54,28 @@ export class UserService {
     };
   }
 
-  public async uploadProfilePicture(file: any) {
+  public async uploadProfilePicture(file: any, userId: number) {
     const filePath = 'temp/' + file.originalname;
 
     writeFileSync(filePath, file.buffer);
 
+    const key = `profile_${Date.now().toString()}.${file.originalname.split('.')[1]}`;
+
     await this.s3ManagerService.putObject({
-      key: Date.now().toString(),
+      key,
       stream: readFileSync(filePath),
     });
 
     rmSync(filePath);
+
+    await this.prismaService.user.update({
+      data: {
+        profilePicture: `${process.env['AWS_ENDPOINT'] ?? 'http://localhost:4566'}/${process.env['AWS_BUCKET_NAME'] ?? 'ichacara-dev'}/${key}`,
+      },
+      where: {
+        id: userId,
+      },
+    });
 
     return 'Imagem criada!';
   }

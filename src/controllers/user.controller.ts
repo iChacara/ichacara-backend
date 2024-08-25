@@ -4,10 +4,12 @@ import {
   Controller,
   InternalServerErrorException,
   Post,
+  Req,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Request } from 'express';
 import { Public } from 'src/constants/ispublic';
 import { AuthDTO } from 'src/dto/auth.dto';
 import { UserService } from 'src/services/user.service';
@@ -37,12 +39,17 @@ export class UserController {
     }
   }
 
-  @Public()
   @Post('profile-picture')
   @UseInterceptors(FileInterceptor('file'))
-  async submitProfilePicture(@UploadedFile() file: Express.Multer.File) {
+  async submitProfilePicture(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() request: Request,
+  ) {
     try {
-      return this.userService.uploadProfilePicture(file);
+      return this.userService.uploadProfilePicture(
+        file,
+        request['user'].sub ?? 0,
+      );
     } catch (error) {
       console.log(error);
     }
