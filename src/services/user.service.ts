@@ -77,6 +77,8 @@ export class UserService {
       },
     });
 
-    return 'Imagem criada!';
+    return {
+      message: 'Foto de perfil atualizada com sucesso',
+    };
   }
 }

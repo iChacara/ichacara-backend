@@ -52,6 +52,9 @@ export class UserController {
       );
     } catch (error) {
       console.log(error);
+      throw new InternalServerErrorException(
+        'Algum erro inesperado aconteceu, tente novamente mais tarde',
+      );
     }
   }
 }
