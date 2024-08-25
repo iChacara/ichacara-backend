@@ -7,6 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { IS_LESSOR } from 'src/constants/isLessor';
 import { IS_PUBLIC_KEY } from 'src/constants/ispublic';
 
 @Injectable()
@@ -34,6 +35,15 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env['JWT_SECRET'],
       });
+
+      const isLessor = this.reflector.getAllAndOverride<boolean>(IS_LESSOR, [
+        context.getHandler(),
+        context.getClass(),
+      ]);
+
+      if (isLessor && payload.type !== 'lessor') {
+        throw new UnauthorizedException();
+      }
 
       request['user'] = payload;
     } catch {

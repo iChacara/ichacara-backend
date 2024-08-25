@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
+import { Lessor } from 'src/constants/isLessor';
 import { Public } from 'src/constants/ispublic';
 import { AuthDTO } from 'src/dto/auth.dto';
 import { UserService } from 'src/services/user.service';

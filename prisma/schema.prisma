@@ -36,4 +36,31 @@ model Lessor {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Farm      Farm[]
+}
+
+model Farm {
+  id           Int     @id @default(autoincrement())
+  title        String?
+  name         String?
+  cep          String?
+  street       String?
+  number       String?
+  complement   String?
+  neighborhood String?
+  city         String?
+  state        String?
+  numRooms     Int?
+  numBeds      Int?
+  numBathrooms Int?
+  maxOccupancy Int?
+  services     String?
+  highlights   String?
+  photos       String?
+  dailyPrice   Float?
+  lessorId     Int
+  lessor       Lessor  @relation(fields: [lessorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
