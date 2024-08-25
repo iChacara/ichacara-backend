@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   InternalServerErrorException,
   Post,
   Req,
@@ -38,6 +39,17 @@ export class FarmController {
         dailyPrice: farm.dailyPrice,
         lessorId: request['user'].lessorId ?? 0,
       });
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Algum erro inesperado aconteceu, tente novamente mais tarde',
+      );
+    }
+  }
+
+  @Get()
+  public async listFarms() {
+    try {
+      return await this.farmService.listFarms();
     } catch (error) {
       throw new InternalServerErrorException(
         'Algum erro inesperado aconteceu, tente novamente mais tarde',

@@ -7,6 +7,16 @@ export class FarmService {
   constructor(private prismaService: PrismaService) {}
 
   public async createFarm(farm: Farm) {
-    return await this.prismaService.farm.create({ data: farm });
+    return {
+      message: 'Chácara criada com sucesso',
+      data: await this.prismaService.farm.create({ data: farm }),
+    };
+  }
+
+  public async listFarms() {
+    return {
+      message: 'Chácaras listada com sucesso',
+      data: await this.prismaService.farm.findMany(),
+    };
   }
 }
