@@ -42,6 +42,8 @@ export class UserService {
       access_token: await this.jwtService.signAsync(
         {
           sub: user.id,
+          lessorId: user[type].id,
+          lesseeId: user[type].id,
           username: user.email,
           type,
         },

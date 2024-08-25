@@ -1,0 +1,25 @@
+-- CreateTable
+CREATE TABLE "Farm" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "title" TEXT,
+    "name" TEXT,
+    "cep" TEXT,
+    "street" TEXT,
+    "number" TEXT,
+    "complement" TEXT,
+    "neighborhood" TEXT,
+    "city" TEXT,
+    "state" TEXT,
+    "numRooms" INTEGER,
+    "numBeds" INTEGER,
+    "numBathrooms" INTEGER,
+    "maxOccupancy" INTEGER,
+    "services" TEXT,
+    "highlights" TEXT,
+    "photos" TEXT,
+    "dailyPrice" REAL,
+    "lessorId" INTEGER NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Farm_lessorId_fkey" FOREIGN KEY ("lessorId") REFERENCES "Lessor" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);

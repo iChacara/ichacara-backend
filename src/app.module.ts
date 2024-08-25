@@ -13,6 +13,8 @@ import { AuthGuard } from './guards/auth.guard';
 import { AwsSdkModule } from 'nest-aws-sdk';
 import { SharedIniFileCredentials, S3 } from 'aws-sdk';
 import { S3ManagerModule } from './modules/s3-manager.module';
+import { FarmController } from './controllers/farm.controller';
+import { FarmService } from './services/farm.service';
 
 @Module({
   imports: [
@@ -29,7 +31,7 @@ import { S3ManagerModule } from './modules/s3-manager.module';
       services: [S3],
     }),
   ],
-  controllers: [LesseeController, LessorController, UserController],
+  controllers: [LesseeController, LessorController, UserController, FarmController],
   providers: [
     PrismaService,
     LesseeService,
@@ -41,6 +43,7 @@ import { S3ManagerModule } from './modules/s3-manager.module';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    FarmService,
   ],
 })
 export class AppModule {}
