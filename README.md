@@ -12,7 +12,8 @@ Criar migration
 # Acessos
 ## Postman
 email: maria-fernanda-dalla@tuamaeaquelaursa.com
-email: maria-fernanda-dalla@tuamaeaquelaursa.com
+
+senha: maria-fernanda-dalla@tuamaeaquelaursa.com
 
 ---
 # Configuração de ambiente
