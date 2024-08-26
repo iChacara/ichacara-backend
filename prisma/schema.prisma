@@ -19,6 +19,7 @@ model User {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   Notification Notification[]
+  Event        Event[]
 }
 
 model Lessee {
@@ -78,6 +79,9 @@ model Notification {
 }
 
 model Event {
-  id    Int    @id @default(autoincrement())
-  event String
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  event     String
+  createdAt DateTime @default(now())
+  User      User     @relation(fields: [userId], references: [id])
 }
