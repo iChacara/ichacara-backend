@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   InternalServerErrorException,
+  NotFoundException,
+  Param,
   Post,
   Req,
 } from '@nestjs/common';
@@ -51,6 +53,20 @@ export class FarmController {
     try {
       return await this.farmService.listFarms();
     } catch (error) {
+      throw new InternalServerErrorException(
+        'Algum erro inesperado aconteceu, tente novamente mais tarde',
+      );
+    }
+  }
+
+  @Get(':id')
+  public async getFarm(@Param('id') id: number) {
+    try {
+      return await this.farmService.getFarm(+id);
+    } catch (error) {
+      if (error.message === 'notFound') {
+        throw new NotFoundException('Chácara não encontrada');
+      }
       throw new InternalServerErrorException(
         'Algum erro inesperado aconteceu, tente novamente mais tarde',
       );

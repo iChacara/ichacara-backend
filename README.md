@@ -29,7 +29,7 @@ senha: maria-fernanda-dalla@tuamaeaquelaursa.com
 ## Aplicação
 *Instalar dependências*
 
-`npm i`
+`npm i --legacy-peer-deps`
 
 *Executar o projeto*
 

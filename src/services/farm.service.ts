@@ -19,4 +19,17 @@ export class FarmService {
       data: await this.prismaService.farm.findMany(),
     };
   }
+
+  public async getFarm(id: number) {
+    const farm = await this.prismaService.farm.findFirst({ where: { id } });
+    const message = 'Chácara buscada com sucesso';
+    if (!farm) {
+      throw new Error('notFound');
+    }
+
+    return {
+      message,
+      data: farm,
+    };
+  }
 }
