@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { readFileSync, rmSync, writeFileSync } from 'fs';
 import { S3ManagerService } from './s3-manager.service';
 import { eventTypes } from 'src/constants/eventTypes';
+import { EventService } from './event.service';
 
 @Injectable()
 export class UserService {
@@ -12,6 +13,7 @@ export class UserService {
     private prismaService: PrismaService,
     private jwtService: JwtService,
     private s3ManagerService: S3ManagerService,
+    private eventService: EventService,
   ) {}
 
   public async auth(loginData: { email: string; password: string }) {
@@ -39,9 +41,11 @@ export class UserService {
 
     const type = user.lessee ? 'lessee' : 'lessor';
 
-    await this.prismaService.event.create({
-      data: { event: eventTypes['autenticacao_realizada'], userId: user.id },
+    await this.eventService.createEvent({
+      event: eventTypes['autenticacao_realizada'],
+      userId: user.id,
     });
+
     return {
       access_token: await this.jwtService.signAsync(
         {

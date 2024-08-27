@@ -15,6 +15,8 @@ import { SharedIniFileCredentials, S3 } from 'aws-sdk';
 import { S3ManagerModule } from './modules/s3-manager.module';
 import { FarmController } from './controllers/farm.controller';
 import { FarmService } from './services/farm.service';
+import { EventService } from './services/event.service';
+import { EventController } from './controllers/event.controller';
 
 @Module({
   imports: [
@@ -31,7 +33,13 @@ import { FarmService } from './services/farm.service';
       services: [S3],
     }),
   ],
-  controllers: [LesseeController, LessorController, UserController, FarmController],
+  controllers: [
+    LesseeController,
+    LessorController,
+    UserController,
+    FarmController,
+    EventController,
+  ],
   providers: [
     PrismaService,
     LesseeService,
@@ -44,6 +52,7 @@ import { FarmService } from './services/farm.service';
       useClass: AuthGuard,
     },
     FarmService,
+    EventService,
   ],
 })
 export class AppModule {}
