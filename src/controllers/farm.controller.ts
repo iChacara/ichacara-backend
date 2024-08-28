@@ -6,8 +6,12 @@ import {
   NotFoundException,
   Param,
   Post,
+  Query,
   Req,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { CreateFarmDto } from 'src/dto/farm.dto';
 import { FarmService } from 'src/services/farm.service';
@@ -67,6 +71,22 @@ export class FarmController {
       if (error.message === 'notFound') {
         throw new NotFoundException('Chácara não encontrada');
       }
+      throw new InternalServerErrorException(
+        'Algum erro inesperado aconteceu, tente novamente mais tarde',
+      );
+    }
+  }
+
+  @Post('upload-farm-pics')
+  @UseInterceptors(FilesInterceptor('files'))
+  async submitProfilePicture(
+    @UploadedFiles() files: Express.Multer.File[],
+    @Query('farmId') farmId: string,
+  ) {
+    try {
+      return this.farmService.uploadFarmPics(files, +farmId);
+    } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException(
         'Algum erro inesperado aconteceu, tente novamente mais tarde',
       );
