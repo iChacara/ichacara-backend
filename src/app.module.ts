@@ -17,6 +17,8 @@ import { FarmController } from './controllers/farm.controller';
 import { FarmService } from './services/farm.service';
 import { EventService } from './services/event.service';
 import { EventController } from './controllers/event.controller';
+import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -31,6 +33,17 @@ import { EventController } from './controllers/event.controller';
         s3ForcePathStyle: true,
       },
       services: [S3],
+    }),
+    I18nModule.forRoot({
+      fallbackLanguage: 'pt',
+      loaderOptions: {
+        path: join(__dirname, '/i18n/'),
+        watch: true,
+      },
+      resolvers: [
+        { use: QueryResolver, options: ['lang'] },
+        AcceptLanguageResolver,
+      ],
     }),
   ],
   controllers: [
