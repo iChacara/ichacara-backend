@@ -8,6 +8,7 @@ import {
 import { LessorService } from '../services/lessor.service';
 import { CreateLessorDTO } from 'src/dto/lessor.dto';
 import { Public } from 'src/constants/ispublic';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Controller('lessor')
 export class LessorController {
@@ -15,7 +16,8 @@ export class LessorController {
 
   @Public()
   @Post()
-  async createLessor(@Body() lessor: CreateLessorDTO) {
+  async createLessor(@Body() lessor: CreateLessorDTO, @I18n() i18n: I18nContext) {
+    console.log(i18n.t('responses.TEST.LIBRARY'))
     try {
       const createdLessor = await this.lessorService.createLessor(lessor);
 
