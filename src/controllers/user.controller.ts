@@ -45,6 +45,7 @@ export class UserController {
   async submitProfilePicture(
     @UploadedFile() file: Express.Multer.File,
     @Req() request: Request,
+    @I18n() i18n: I18nContext
   ) {
     try {
       return this.userService.uploadProfilePicture(
@@ -54,7 +55,7 @@ export class UserController {
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
-        'Algum erro inesperado aconteceu, tente novamente mais tarde',
+          i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
       );
     }
   }
