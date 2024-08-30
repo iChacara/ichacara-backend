@@ -17,20 +17,19 @@ export class LessorController {
   @Public()
   @Post()
   async createLessor(@Body() lessor: CreateLessorDTO, @I18n() i18n: I18nContext) {
-    console.log(i18n.t('responses.TEST.LIBRARY'))
     try {
       const createdLessor = await this.lessorService.createLessor(lessor);
 
       return {
-        message: 'Conta criada com sucesso',
+        message: i18n.t('responses.MESSAGES.CREATE_ACCOUNT_OK'),
         data: createdLessor,
       };
     } catch (error) {
       if (error.code === 'P2002') {
-        throw new BadRequestException('Endereço e-mail indisponível');
+        throw new BadRequestException(i18n.t('responses.MESSAGES.EMAIL_ADDRESS_UNAVAIABLE'));
       } else {
         throw new InternalServerErrorException(
-          'Algum erro inesperado aconteceu, tente novamente mais tarde',
+          i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
         );
       }
     }

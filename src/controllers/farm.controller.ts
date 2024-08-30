@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
+import { I18n, I18nContext } from 'nestjs-i18n';
 import { CreateFarmDto } from 'src/dto/farm.dto';
 import { FarmService } from 'src/services/farm.service';
 
@@ -24,6 +25,7 @@ export class FarmController {
   public async createFarm(
     @Body() farm: CreateFarmDto,
     @Req() request: Request,
+    @I18n() i18n: I18nContext
   ) {
     try {
       return this.farmService.createFarm({
@@ -47,32 +49,32 @@ export class FarmController {
       });
     } catch (error) {
       throw new InternalServerErrorException(
-        'Algum erro inesperado aconteceu, tente novamente mais tarde',
+        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
       );
     }
   }
 
   @Get()
-  public async listFarms() {
+  public async listFarms(@I18n() i18n: I18nContext) {
     try {
       return await this.farmService.listFarms();
     } catch (error) {
       throw new InternalServerErrorException(
-        'Algum erro inesperado aconteceu, tente novamente mais tarde',
+        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
       );
     }
   }
 
   @Get(':id')
-  public async getFarm(@Param('id') id: number) {
+  public async getFarm(@Param('id') id: number, @I18n() i18n: I18nContext) {
     try {
       return await this.farmService.getFarm(+id);
     } catch (error) {
       if (error.message === 'notFound') {
-        throw new NotFoundException('Chácara não encontrada');
+        throw new NotFoundException(i18n.t('responses.MESSAGES.FARM_NOT_FOUND'));
       }
       throw new InternalServerErrorException(
-        'Algum erro inesperado aconteceu, tente novamente mais tarde',
+        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
       );
     }
   }
@@ -82,13 +84,14 @@ export class FarmController {
   async submitProfilePicture(
     @UploadedFiles() files: Express.Multer.File[],
     @Query('farmId') farmId: string,
+    @I18n() i18n: I18nContext
   ) {
     try {
       return this.farmService.uploadFarmPics(files, +farmId);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
-        'Algum erro inesperado aconteceu, tente novamente mais tarde',
+        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
       );
     }
   }

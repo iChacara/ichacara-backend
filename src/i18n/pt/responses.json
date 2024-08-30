@@ -1,5 +1,12 @@
 {
     "TEST": {
         "LIBRARY": "Testing use library nest-i18n"
+    },
+    "MESSAGES" : {
+        "CREATE_ACCOUNT_OK": "Conta criada com sucesso",
+        "AUTHENTICATION_OK": "Autenticação feita com sucesso",
+        "EMAIL_ADDRESS_UNAVAIABLE": "Endereço e-mail indisponível",
+        "INTERNAL_SERVER_ERROR": "Algum erro inesperado aconteceu, tente novamente mais tarde",
+        "FARM_NOT_FOUND": "Chácara não encontrada"
     }
 }
