@@ -31,10 +31,12 @@ export class UserController {
       };
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException(i18n.t('responses.MESSAGES.AUTHENTICATION_OK'),);
+        throw new BadRequestException(
+          i18n.t('responses.MESSAGES.AUTHENTICATION_OK'),
+        );
       } else {
         throw new InternalServerErrorException(
-          i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
+          i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
         );
       }
     }
@@ -45,7 +47,7 @@ export class UserController {
   async submitProfilePicture(
     @UploadedFile() file: Express.Multer.File,
     @Req() request: Request,
-    @I18n() i18n: I18nContext
+    @I18n() i18n: I18nContext,
   ) {
     try {
       return this.userService.uploadProfilePicture(
@@ -55,7 +57,7 @@ export class UserController {
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
-          i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
+        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
       );
     }
   }
