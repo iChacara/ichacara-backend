@@ -13,6 +13,7 @@ import { Request } from 'express';
 import { Public } from 'src/constants/ispublic';
 import { AuthDTO } from 'src/dto/auth.dto';
 import { UserService } from 'src/services/user.service';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Controller('user')
 export class UserController {
@@ -20,20 +21,20 @@ export class UserController {
 
   @Public()
   @Post('auth')
-  async auth(@Body() login: AuthDTO) {
+  async auth(@Body() login: AuthDTO, @I18n() i18n: I18nContext) {
     try {
       const authResult = await this.userService.auth(login);
 
       return {
-        message: 'Conta criada com sucesso',
+        message: i18n.t('responses.MESSAGES.CREATE_ACCOUNT_OK'),
         data: authResult,
       };
     } catch (error) {
       if (error.code === 'P2025') {
-        throw new BadRequestException('Não foi possível se autenticar');
+        throw new BadRequestException(i18n.t('responses.MESSAGES.AUTHENTICATION_OK'),);
       } else {
         throw new InternalServerErrorException(
-          'Algum erro inesperado aconteceu, tente novamente mais tarde',
+          i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
         );
       }
     }
@@ -44,6 +45,7 @@ export class UserController {
   async submitProfilePicture(
     @UploadedFile() file: Express.Multer.File,
     @Req() request: Request,
+    @I18n() i18n: I18nContext
   ) {
     try {
       return this.userService.uploadProfilePicture(
@@ -53,7 +55,7 @@ export class UserController {
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
-        'Algum erro inesperado aconteceu, tente novamente mais tarde',
+          i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
       );
     }
   }
