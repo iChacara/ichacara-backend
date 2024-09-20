@@ -27,8 +27,9 @@ model Lessee {
   userId Int  @unique
   user   User @relation(fields: [userId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Booking   Booking[]
 }
 
 model Lessor {
@@ -65,8 +66,9 @@ model Farm {
 
   lessor Lessor @relation(fields: [lessorId], references: [id])
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Booking   Booking[]
 }
 
 model Notification {
@@ -86,4 +88,36 @@ model Event {
   event     String
   createdAt DateTime @default(now())
   User      User     @relation(fields: [userId], references: [id])
+}
+
+model Booking {
+  id         Int      @id @default(autoincrement())
+  lesseeId   Int
+  farmId     Int
+  startDate  DateTime
+  endDate    DateTime
+  status     String   @default("pending")
+  totalPrice Float
+
+  lessee Lessee @relation(fields: [lesseeId], references: [id])
+  farm   Farm   @relation(fields: [farmId], references: [id])
+
+  Payment   Payment?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Payment {
+  id            Int       @id @default(autoincrement())
+  bookingId     Int       @unique
+  amount        Float
+  paymentStatus String    @default("pending")
+  paymentMethod String
+  transactionId String?
+  paidAt        DateTime?
+
+  booking Booking @relation(fields: [bookingId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
