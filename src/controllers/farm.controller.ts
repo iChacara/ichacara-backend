@@ -27,32 +27,35 @@ export class FarmController {
   public async createFarm(
     @Body() farm: CreateFarmDto,
     @Req() request: Request,
-    @I18n() i18n: I18nContext
+    @I18n() i18n: I18nContext,
   ) {
     try {
-      return this.farmService.createFarm({
-        title: farm.title,
-        name: farm.name,
-        cep: farm.cep,
-        street: farm.street,
-        number: farm.number,
-        complement: farm.complement,
-        district: farm.district,
-        city: farm.city,
-        state: farm.state,
-        numRooms: farm.numRooms,
-        numBeds: farm.numBeds,
-        numBathrooms: farm.numBathrooms,
-        maxOccupancy: farm.maxOccupancy,
-        services: farm.services.toString(),
-        highlights: farm.highlights.toString(),
-        dailyPrice: farm.dailyPrice,
-        lessorId: request['user'].lessorId ?? 0,
-      });
+      return this.farmService.createFarm(
+        {
+          title: farm.title,
+          name: farm.name,
+          cep: farm.cep,
+          street: farm.street,
+          number: farm.number,
+          complement: farm.complement,
+          district: farm.district,
+          city: farm.city,
+          state: farm.state,
+          numRooms: farm.numRooms,
+          numBeds: farm.numBeds,
+          numBathrooms: farm.numBathrooms,
+          maxOccupancy: farm.maxOccupancy,
+          services: farm.services.toString(),
+          highlights: farm.highlights.toString(),
+          dailyPrice: farm.dailyPrice,
+          lessorId: request['user'].lessorId ?? 0,
+        },
+        request['user'].sub,
+      );
     } catch (error) {
-      console.log(error)
+      console.log(error);
       throw new InternalServerErrorException(
-        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
+        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
       );
     }
   }
@@ -63,7 +66,7 @@ export class FarmController {
       return await this.farmService.listFarms();
     } catch (error) {
       throw new InternalServerErrorException(
-        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
+        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
       );
     }
   }
@@ -74,10 +77,12 @@ export class FarmController {
       return await this.farmService.getFarm(+id);
     } catch (error) {
       if (error.message === 'notFound') {
-        throw new NotFoundException(i18n.t('responses.MESSAGES.FARM_NOT_FOUND'));
+        throw new NotFoundException(
+          i18n.t('responses.MESSAGES.FARM_NOT_FOUND'),
+        );
       }
       throw new InternalServerErrorException(
-        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
+        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
       );
     }
   }
@@ -87,14 +92,14 @@ export class FarmController {
   async submitProfilePicture(
     @UploadedFiles() files: Express.Multer.File[],
     @Query('farmId') farmId: string,
-    @I18n() i18n: I18nContext
+    @I18n() i18n: I18nContext,
   ) {
     try {
       return this.farmService.uploadFarmPics(files, +farmId);
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
-        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
+        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
       );
     }
   }

@@ -3,18 +3,22 @@ import { PrismaService } from './prisma.service';
 import { Farm } from 'src/interfaces/farm.interface';
 import { readFileSync, rmSync, writeFileSync } from 'fs';
 import { S3ManagerService } from './s3-manager.service';
+import { EventService } from './event.service';
 
 @Injectable()
 export class FarmService {
   constructor(
     private prismaService: PrismaService,
     private s3ManagerService: S3ManagerService,
-  ) { }
+    private eventService: EventService,
+  ) {}
 
-  public async createFarm(farm: Farm) {
+  public async createFarm(farm: Farm, userId: number) {
+    const data = await this.prismaService.farm.create({ data: farm });
+    await this.eventService.createEvent({ event: 'Chácara criada', userId });
     return {
       message: 'Chácara criada com sucesso',
-      data: await this.prismaService.farm.create({ data: farm }),
+      data,
     };
   }
 
