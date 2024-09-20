@@ -68,7 +68,7 @@ export class CreateFarmDto {
 
   @IsString()
   @IsNotEmpty()
-  neighborhood: string;
+  district: string;
 
   @IsString()
   @IsNotEmpty()
@@ -96,11 +96,11 @@ export class CreateFarmDto {
 
   @IsArray()
   @ArrayNotEmpty()
-  services: number[];
+  services: string[];
 
   @IsArray()
   @ArrayNotEmpty()
-  highlights: number[];
+  highlights: string[];
 
   @IsNumber()
   @IsPositive()

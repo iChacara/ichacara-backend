@@ -7,7 +7,7 @@ CREATE TABLE "Farm" (
     "street" TEXT,
     "number" TEXT,
     "complement" TEXT,
-    "neighborhood" TEXT,
+    "district" TEXT,
     "city" TEXT,
     "state" TEXT,
     "numRooms" INTEGER,

@@ -9,7 +9,7 @@ export class FarmService {
   constructor(
     private prismaService: PrismaService,
     private s3ManagerService: S3ManagerService,
-  ) {}
+  ) { }
 
   public async createFarm(farm: Farm) {
     return {

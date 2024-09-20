@@ -14,6 +14,7 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { I18n, I18nContext } from 'nestjs-i18n';
+import { Lessor } from 'src/constants/isLessor';
 import { CreateFarmDto } from 'src/dto/farm.dto';
 import { FarmService } from 'src/services/farm.service';
 
@@ -21,6 +22,7 @@ import { FarmService } from 'src/services/farm.service';
 export class FarmController {
   constructor(private farmService: FarmService) {}
 
+  @Lessor()
   @Post()
   public async createFarm(
     @Body() farm: CreateFarmDto,
@@ -35,7 +37,7 @@ export class FarmController {
         street: farm.street,
         number: farm.number,
         complement: farm.complement,
-        neighborhood: farm.neighborhood,
+        district: farm.district,
         city: farm.city,
         state: farm.state,
         numRooms: farm.numRooms,
@@ -48,6 +50,7 @@ export class FarmController {
         lessorId: request['user'].lessorId ?? 0,
       });
     } catch (error) {
+      console.log(error)
       throw new InternalServerErrorException(
         i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
       );
