@@ -19,6 +19,8 @@ import { EventService } from './services/event.service';
 import { EventController } from './controllers/event.controller';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { join } from 'path';
+import { BookingService } from './services/booking.service';
+import { BookingController } from './controllers/booking.controller';
 
 @Module({
   imports: [
@@ -52,6 +54,7 @@ import { join } from 'path';
     UserController,
     FarmController,
     EventController,
+    BookingController,
   ],
   providers: [
     PrismaService,
@@ -59,6 +62,7 @@ import { join } from 'path';
     LessorService,
     UtilsService,
     UserService,
+    BookingService,
     JwtService,
     {
       provide: APP_GUARD,

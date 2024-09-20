@@ -2,8 +2,9 @@ import {
   Injectable,
   BadRequestException,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
-import { CreateBookingDto } from '../dto/booking.dto'; // DTO to handle booking request
+import { CreateBookingDto } from '../dto/booking.dto';
 import { PrismaService } from './prisma.service';
 import { Booking } from '@prisma/client';
 
@@ -11,14 +12,19 @@ import { Booking } from '@prisma/client';
 export class BookingService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createBooking(createBookingDto: CreateBookingDto): Promise<Booking> {
-    const { lesseeId, farmId, startDate, endDate, numGuests } =
-      createBookingDto;
+  async createBooking(
+    createBookingDto: CreateBookingDto,
+    lesseeId: number,
+  ): Promise<Booking> {
+    const { farmId, startDate, endDate, numGuests } = createBookingDto;
 
     const existingFarmBooking = await this.prisma.booking.findMany({
       where: {
         farmId,
-        AND: [{ startDate: { lte: endDate } }, { endDate: { gte: startDate } }],
+        AND: [
+          { startDate: { lte: new Date(endDate).toISOString() } },
+          { endDate: { gte: new Date(startDate).toISOString() } },
+        ],
       },
     });
     if (existingFarmBooking.length > 0) {
@@ -30,7 +36,10 @@ export class BookingService {
     const existingLesseeBooking = await this.prisma.booking.findMany({
       where: {
         lesseeId,
-        AND: [{ startDate: { lte: endDate } }, { endDate: { gte: startDate } }],
+        AND: [
+          { startDate: { lte: new Date(endDate).toISOString() } },
+          { endDate: { gte: new Date(startDate).toISOString() } },
+        ],
       },
     });
     if (existingLesseeBooking.length > 0) {
@@ -63,7 +72,9 @@ export class BookingService {
 
     const farm = await this.prisma.farm.findUnique({ where: { id: farmId } });
     if (!farm || !farm.approved) {
-      throw new NotFoundException('A chácara não está disponível para alugar.');
+      throw new BadRequestException(
+        'A chácara não está disponível para alugar.',
+      );
     }
 
     const lessee = await this.prisma.lessee.findUnique({
@@ -104,5 +115,44 @@ export class BookingService {
     });
 
     return newBooking;
+  }
+
+  async approveBooking(lessorId: number, bookingId: number): Promise<Booking> {
+    const booking = await this.prisma.booking.findUnique({
+      where: { id: bookingId },
+      include: {
+        farm: true,
+      },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Agendamento não encontrado.');
+    }
+
+    if (booking.status !== 'pending') {
+      throw new BadRequestException(
+        'Só é possível aprovar agendamentos pendentes.',
+      );
+    }
+
+    const farm = await this.prisma.farm.findUnique({
+      where: { id: booking.farmId },
+      include: { lessor: true },
+    });
+
+    if (!farm || farm.lessorId !== lessorId) {
+      throw new ForbiddenException(
+        'Você não tem autorização para aprovar esse agendamento.',
+      );
+    }
+
+    const approvedBooking = await this.prisma.booking.update({
+      where: { id: bookingId },
+      data: {
+        status: 'approved',
+      },
+    });
+
+    return approvedBooking;
   }
 }
