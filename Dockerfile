@@ -8,6 +8,6 @@ RUN npm install --force
 
 COPY . .
 
-RUN npm run build && npx prisma generate
+RUN npx prisma generate && npm run build
 
 CMD [ "npm", "run", "start:dev" ]
