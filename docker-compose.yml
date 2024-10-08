@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       - POSTGRES_PASSWORD=postgres
-    container_name: ichacara_db
+    container_name: postgres
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     ports:
@@ -16,7 +16,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ichacara_api
+    container_name: nest-docker-postgres
     environment:
       - PORT=${PORT}
     ports:
@@ -42,7 +42,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     restart: always
-    container_name: ichacara_pgadmin
+    container_name: nest-pgadmin4
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@admin.com
       - PGADMIN_DEFAULT_PASSWORD=pgadmin4
