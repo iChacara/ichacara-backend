@@ -21,6 +21,10 @@ import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { join } from 'path';
 import { BookingService } from './services/booking.service';
 import { BookingController } from './controllers/booking.controller';
+import { PaymentController } from './controllers/payment.controller';
+import { PaymentService } from './services/payment.service';
+import { WebhookService } from './services/webhook.service';
+import { WebhookController } from './controllers/webhook.controller';
 
 @Module({
   imports: [
@@ -55,6 +59,8 @@ import { BookingController } from './controllers/booking.controller';
     FarmController,
     EventController,
     BookingController,
+    PaymentController,
+    WebhookController,
   ],
   providers: [
     PrismaService,
@@ -64,6 +70,8 @@ import { BookingController } from './controllers/booking.controller';
     UserService,
     BookingService,
     JwtService,
+    PaymentService,
+    WebhookService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,

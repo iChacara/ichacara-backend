@@ -32,7 +32,7 @@ export class UserController {
     } catch (error) {
       if (error.code === 'P2025') {
         throw new BadRequestException(
-          i18n.t('responses.MESSAGES.AUTHENTICATION_OK'),
+          i18n.t('responses.MESSAGES.AUTHENTICATION_FAILED'),
         );
       } else {
         throw new InternalServerErrorException(
