@@ -9,7 +9,7 @@ export class WebhookService {
     const { type, data } = notification;
 
     console.log(notification);
-    
+
     // Você pode verificar o tipo de notificação
     switch (type) {
       case 'payment':
