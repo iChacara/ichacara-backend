@@ -1,4 +1,5 @@
 # compiled output
+/pgdata
 /dist
 /node_modules
 /build

@@ -18,6 +18,7 @@ export class LesseeController {
   @Post()
   async createLessee(@Body() lessee: CreateLesseeDTO, @I18n() i18n: I18nContext) {
     try {
+	    console.log(lessee);
       const createdLessee = await this.lesseeService.createLessee(lessee);
 
       return {
@@ -25,6 +26,7 @@ export class LesseeController {
         data: createdLessee,
       };
     } catch (error) {
+      console.log(error);
       if (error.code === 'P2002') {
         throw new BadRequestException(i18n.t('responses.MESSAGES.EMAIL_ADDRESS_UNAVAIABLE'));
       } else {

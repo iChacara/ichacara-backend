@@ -10,6 +10,11 @@ export class WebhookController {
   @Post()
   @HttpCode(HttpStatus.OK)
   async handlePaymentNotification(@Body() notification: any) {
-    await this.webhookService.processNotification(notification);
+    try {
+      console.log(notification)
+      await this.webhookService.processNotification(notification);
+    } catch (err) {
+      console.log(err)
+    }
   }
 }
