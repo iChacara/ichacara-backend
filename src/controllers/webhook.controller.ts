@@ -6,9 +6,9 @@ import { WebhookService } from 'src/services/webhook.service';
 export class WebhookController {
   constructor(private readonly webhookService: WebhookService) {}
 
+  @Public()
   @Post()
   @HttpCode(HttpStatus.OK)
-  @Public()
   async handlePaymentNotification(@Body() notification: any) {
     await this.webhookService.processNotification(notification);
   }
