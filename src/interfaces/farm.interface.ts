@@ -1,6 +1,7 @@
 export interface Farm {
   title: string;
   name: string;
+  description: string;
   cep: string;
   street: string;
   number: string;

@@ -34,6 +34,7 @@ export class FarmController {
         {
           title: farm.title,
           name: farm.name,
+          description: farm.description,
           cep: farm.cep,
           street: farm.street,
           number: farm.number,

@@ -49,6 +49,7 @@ model Farm {
   cep          String?
   street       String?
   number       String?
+  description       String?
   complement   String?
   district     String?
   city         String?
