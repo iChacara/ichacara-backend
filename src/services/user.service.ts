@@ -58,7 +58,7 @@ export class UserService {
         {
           secret: process.env['JWT_SECRET'],
           algorithm: 'HS256',
-          expiresIn: '1d',
+          expiresIn: '7d',
         },
       ),
     };

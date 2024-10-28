@@ -16,12 +16,13 @@ export class PaymentService {
       idempotencyKey: 'abc',
     };
 
-    const response = await this.payment.create({ body, requestOptions });
+    const response = await this.payment.create({
+      body: { ...body, transaction_amount: 0.4 },
+      requestOptions,
+    });
     const qrCode = response.point_of_interaction?.transaction_data?.qr_code;
     const qrCodeBase64 =
       response?.point_of_interaction?.transaction_data?.qr_code_base64;
-
-      
     return {
       qrCode,
       qrCodeBase64,

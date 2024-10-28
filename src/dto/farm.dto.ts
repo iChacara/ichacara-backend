@@ -97,14 +97,6 @@ export class CreateFarmDto {
   @IsPositive()
   maxOccupancy: number;
 
-  @IsArray()
-  @ArrayNotEmpty()
-  services: string[];
-
-  @IsArray()
-  @ArrayNotEmpty()
-  highlights: string[];
-
   @IsNumber()
   @IsPositive()
   dailyPrice: number;
