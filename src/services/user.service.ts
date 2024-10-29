@@ -80,7 +80,7 @@ export class UserService {
 
     await this.prismaService.user.update({
       data: {
-        profilePicture: `${process.env['AWS_ENDPOINT'] ?? 'http://localhost:4566'}/${process.env['AWS_BUCKET_NAME'] ?? 'ichacara-dev'}/${key}`,
+        profilePicture: `${process.env['DO_SPACES_ENDPOINT']}/${process.env['AWS_BUCKET_NAME'] ?? 'ichacara-dev'}/${key}`,
       },
       where: {
         id: userId,

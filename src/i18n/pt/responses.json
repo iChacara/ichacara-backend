@@ -8,6 +8,7 @@
       "AUTHENTICATION_OK": "Autenticação feita com sucesso",
       "EMAIL_ADDRESS_UNAVAIABLE": "Endereço e-mail indisponível",
       "INTERNAL_SERVER_ERROR": "Algum erro inesperado aconteceu, tente novamente mais tarde",
-      "FARM_NOT_FOUND": "Chácara não encontrada"
+      "FARM_NOT_FOUND": "Chácara não encontrada",
+      "LESSOR_NOT_FOUND": "Locador não encontrado"
     }
 }

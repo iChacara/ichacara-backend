@@ -14,6 +14,10 @@ export class FarmService {
   ) {}
 
   public async createFarm(farm: Farm, userId: number) {
+    // const user = await this.prismaService.user.findUnique({
+    //   select: { id: true },
+    //   where: { id: userId },
+    // });
     const data = await this.prismaService.farm.create({ data: farm });
     await this.eventService.createEvent({ event: 'Chácara criada', userId });
     return {
@@ -59,7 +63,7 @@ export class FarmService {
       rmSync(filePath);
 
       filesUrls.push(
-        `${process.env['AWS_ENDPOINT'] ?? 'http://localhost:4566'}/${process.env['AWS_BUCKET_NAME'] ?? 'ichacara-dev'}/${key}`,
+        `${process.env['DO_SPACES_ENDPOINT'] ?? ''}/${process.env['AWS_BUCKET_NAME'] ?? 'ichacara-dev'}/${key}`,
       );
     }
 

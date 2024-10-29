@@ -30,7 +30,9 @@ export class FarmController {
     @I18n() i18n: I18nContext,
   ) {
     try {
-      return this.farmService.createFarm(
+      console.log(farm);
+
+      return await this.farmService.createFarm(
         {
           title: farm.title,
           name: farm.name,
@@ -54,7 +56,11 @@ export class FarmController {
         request['user'].sub,
       );
     } catch (error) {
-      console.log(error);
+      if (error.code === 'P2003') {
+        throw new NotFoundException(
+          i18n.t('responses.MESSAGES.LESSOR_NOT_FOUND'),
+        );
+      }
       throw new InternalServerErrorException(
         i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
       );
