@@ -16,9 +16,12 @@ export class LesseeController {
 
   @Public()
   @Post()
-  async createLessee(@Body() lessee: CreateLesseeDTO, @I18n() i18n: I18nContext) {
+  async createLessee(
+    @Body() lessee: CreateLesseeDTO,
+    @I18n() i18n: I18nContext,
+  ) {
     try {
-	    console.log(lessee);
+      console.log(lessee);
       const createdLessee = await this.lesseeService.createLessee(lessee);
 
       return {
@@ -28,10 +31,12 @@ export class LesseeController {
     } catch (error) {
       console.log(error);
       if (error.code === 'P2002') {
-        throw new BadRequestException(i18n.t('responses.MESSAGES.EMAIL_ADDRESS_UNAVAIABLE'));
+        throw new BadRequestException(
+          i18n.t('responses.MESSAGES.EMAIL_ADDRESS_UNAVAIABLE'),
+        );
       } else {
         throw new InternalServerErrorException(
-          i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
+          i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
         );
       }
     }

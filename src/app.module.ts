@@ -24,6 +24,7 @@ import { PaymentController } from './controllers/payment.controller';
 import { PaymentService } from './services/payment.service';
 import { WebhookService } from './services/webhook.service';
 import { WebhookController } from './controllers/webhook.controller';
+import { S3 } from 'aws-sdk';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { WebhookController } from './controllers/webhook.controller';
         endpoint: process.env.DO_SPACES_ENDPOINT ?? '',
         s3ForcePathStyle: true,
       },
+      services: [S3]
     }),
     I18nModule.forRoot({
       fallbackLanguage: 'pt',

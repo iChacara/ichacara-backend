@@ -46,8 +46,8 @@ export class FarmController {
           numBeds: farm.numBeds,
           numBathrooms: farm.numBathrooms,
           maxOccupancy: farm.maxOccupancy,
-          ...(farm.services && {services: farm.services.toString()}),
-          ...(farm.highlights && {highlights: farm.highlights.toString()}),
+          ...(farm.services && { services: farm.services.toString() }),
+          ...(farm.highlights && { highlights: farm.highlights.toString() }),
           dailyPrice: farm.dailyPrice,
           lessorId: request['user'].lessorId ?? 0,
         },
@@ -66,6 +66,7 @@ export class FarmController {
     try {
       return await this.farmService.listFarms();
     } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException(
         i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
       );
@@ -77,6 +78,7 @@ export class FarmController {
     try {
       return await this.farmService.getFarm(+id);
     } catch (error) {
+      console.log(error);
       if (error.message === 'notFound') {
         throw new NotFoundException(
           i18n.t('responses.MESSAGES.FARM_NOT_FOUND'),

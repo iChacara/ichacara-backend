@@ -6,7 +6,6 @@ import { PaymentService } from 'src/services/payment.service';
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  // POST /payments - Create a payment and return QR code
   @Post()
   async createPayment(@Body() createPaymentDto: CreatePaymentDto) {
     const paymentResponse =
@@ -14,7 +13,6 @@ export class PaymentController {
     return paymentResponse;
   }
 
-  // GET /payments/:paymentId/status - Check payment status
   @Get(':paymentId/status')
   async checkPaymentStatus(@Param('paymentId') paymentId: string) {
     const paymentStatus =

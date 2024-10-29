@@ -16,7 +16,10 @@ export class LessorController {
 
   @Public()
   @Post()
-  async createLessor(@Body() lessor: CreateLessorDTO, @I18n() i18n: I18nContext) {
+  async createLessor(
+    @Body() lessor: CreateLessorDTO,
+    @I18n() i18n: I18nContext,
+  ) {
     try {
       const createdLessor = await this.lessorService.createLessor(lessor);
 
@@ -27,10 +30,12 @@ export class LessorController {
     } catch (error) {
       console.log(error);
       if (error.code === 'P2002') {
-        throw new BadRequestException(i18n.t('responses.MESSAGES.EMAIL_ADDRESS_UNAVAIABLE'));
+        throw new BadRequestException(
+          i18n.t('responses.MESSAGES.EMAIL_ADDRESS_UNAVAIABLE'),
+        );
       } else {
         throw new InternalServerErrorException(
-          i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
+          i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
         );
       }
     }

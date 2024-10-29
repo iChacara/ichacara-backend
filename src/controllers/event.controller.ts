@@ -19,7 +19,7 @@ export class EventController {
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(
-        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR')
+        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
       );
     }
   }
