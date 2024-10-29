@@ -7,7 +7,7 @@ import { S3 } from 'aws-sdk';
 export class S3ManagerService {
   constructor(@InjectAwsService(S3) private readonly s3: S3) {}
 
-  private bucket = process.env['AWS_BUCKET_NAME'] ?? 'ichacara-dev';
+  private bucket = process.env.DO_SPACES_NAME ?? 'ichacara';
 
   async putObject({ key, stream }) {
     return await this.s3
