@@ -11,7 +11,6 @@ import { JwtService } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
 import { AwsSdkModule } from 'nest-aws-sdk';
-import { SharedIniFileCredentials, S3 } from 'aws-sdk';
 import { S3ManagerModule } from './modules/s3-manager.module';
 import { FarmController } from './controllers/farm.controller';
 import { FarmService } from './services/farm.service';
@@ -31,14 +30,14 @@ import { WebhookController } from './controllers/webhook.controller';
     S3ManagerModule,
     AwsSdkModule.forRoot({
       defaultServiceOptions: {
-        region: 'us-east-1',
-        credentials: new SharedIniFileCredentials({
-          profile: 'localstack',
-        }),
-        endpoint: 'http://localhost:4566',
+        region: 'auto',
+        credentials: {
+          accessKeyId: process.env.DO_SPACES_KEY ?? '',
+          secretAccessKey: process.env.DO_SPACES_SECRET ?? '',
+        },
+        endpoint: process.env.DO_SPACES_ENDPOINT ?? '',
         s3ForcePathStyle: true,
       },
-      services: [S3],
     }),
     I18nModule.forRoot({
       fallbackLanguage: 'pt',
