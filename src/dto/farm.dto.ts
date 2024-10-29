@@ -76,6 +76,12 @@ export class CreateFarmDto {
   @IsString()
   @IsNotEmpty()
   city: string;
+  
+  @IsArray()
+  services: string;
+
+  @IsArray()
+  highlights: string;
 
   @IsEnum(State)
   @IsNotEmpty()
