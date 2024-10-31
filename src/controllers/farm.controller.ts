@@ -30,8 +30,6 @@ export class FarmController {
     @I18n() i18n: I18nContext,
   ) {
     try {
-      console.log(farm);
-
       return await this.farmService.createFarm(
         {
           title: farm.title,

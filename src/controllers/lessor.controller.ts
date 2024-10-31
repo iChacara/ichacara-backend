@@ -28,7 +28,7 @@ export class LessorController {
         data: createdLessor,
       };
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       if (error.code === 'P2002') {
         throw new BadRequestException(
           i18n.t('responses.MESSAGES.EMAIL_ADDRESS_UNAVAIABLE'),

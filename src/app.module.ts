@@ -25,6 +25,7 @@ import { PaymentService } from './services/payment.service';
 import { WebhookService } from './services/webhook.service';
 import { WebhookController } from './controllers/webhook.controller';
 import { S3 } from 'aws-sdk';
+console.log(process.env.DO_SPACES_KEY);
 
 @Module({
   imports: [

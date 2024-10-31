@@ -14,10 +14,6 @@ export class FarmService {
   ) {}
 
   public async createFarm(farm: Farm, userId: number) {
-    // const user = await this.prismaService.user.findUnique({
-    //   select: { id: true },
-    //   where: { id: userId },
-    // });
     const data = await this.prismaService.farm.create({ data: farm });
     await this.eventService.createEvent({ event: 'Chácara criada', userId });
     return {
@@ -53,7 +49,9 @@ export class FarmService {
       const filePath = 'temp/' + files[index].originalname;
       writeFileSync(filePath, files[index].buffer);
 
-      const key = `profile_${Date.now().toString()}.${files[index].originalname.split('.')[1]}`;
+      const key = `farm_${farmId}/profile_${Date.now().toString()}.${files[index].originalname.split('.')[1]}`;
+      console.log(process.env);
+
 
       await this.s3ManagerService.putObject({
         key,
@@ -63,7 +61,7 @@ export class FarmService {
       rmSync(filePath);
 
       filesUrls.push(
-        `${process.env['DO_SPACES_ENDPOINT'] ?? ''}/${process.env['AWS_BUCKET_NAME'] ?? 'ichacara-dev'}/${key}`,
+        `${process.env['DO_CDN_ENDPOINT'] ?? ''}/${process.env['DO_SPACES_NAME'] ?? 'ichacara'}/${key}`,
       );
     }
 
