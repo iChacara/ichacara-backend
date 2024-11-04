@@ -52,7 +52,6 @@ export class FarmService {
       const key = `farm_${farmId}/profile_${Date.now().toString()}.${files[index].originalname.split('.')[1]}`;
       console.log(process.env);
 
-
       await this.s3ManagerService.putObject({
         key,
         stream: readFileSync(filePath),
