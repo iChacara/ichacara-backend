@@ -15,6 +15,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { Lessor } from 'src/constants/isLessor';
+import { Public } from 'src/constants/ispublic';
 import { CreateFarmDto } from 'src/dto/farm.dto';
 import { FarmService } from 'src/services/farm.service';
 
@@ -65,6 +66,7 @@ export class FarmController {
     }
   }
 
+  @Public()
   @Get()
   public async listFarms(@I18n() i18n: I18nContext) {
     try {
