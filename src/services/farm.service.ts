@@ -29,12 +29,17 @@ export class FarmService {
     };
   }
 
-  public async getFarm(id: number) {
+  public async getFarm(id: number, userId: number) {
     const farm = await this.prismaService.farm.findFirst({ where: { id } });
     const message = 'Chácara buscada com sucesso';
     if (!farm) {
       throw new Error('notFound');
     }
+
+    this.eventService.createEvent({
+      userId,
+      event: `Chácara id:${farm.id} listada`,
+    });
 
     return {
       message,

@@ -7,6 +7,8 @@ export class LessorService {
   constructor(private utilsService: UtilsService) {}
 
   public async createLessor(lessorData: LessorCreate) {
+    console.log('jorge >>>>>>>>>>>>>>>>>>>>>>');
+
     return this.utilsService.createLessorOrLessee(lessorData, 'lessor');
   }
 }

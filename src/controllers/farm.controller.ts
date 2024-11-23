@@ -80,11 +80,14 @@ export class FarmController {
   }
 
   @Get(':id')
-  public async getFarm(@Param('id') id: number, @I18n() i18n: I18nContext) {
+  public async getFarm(
+    @Param('id') id: number,
+    @I18n() i18n: I18nContext,
+    @Req() request: Request,
+  ) {
     try {
-      return await this.farmService.getFarm(+id);
+      return await this.farmService.getFarm(+id, request['user']['sub']);
     } catch (error) {
-      console.log(error);
       if (error.message === 'notFound') {
         throw new NotFoundException(
           i18n.t('responses.MESSAGES.FARM_NOT_FOUND'),

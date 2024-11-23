@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
-import { Event } from 'src/interfaces/event.interface';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Event } from 'src/schemas/event.schema';
 @Injectable()
 export class EventService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(@InjectModel(Event.name) private eventModel: Model<Event>) {}
 
-  public async createEvent(event: Event) {
-    return await this.prismaService.event.create({
-      data: event,
-    });
+  public createEvent(event: Event): Promise<Event> {
+    const eventModel = new this.eventModel(event);
+    return eventModel.save();
   }
 
-  public async listEvents(userId) {
-    return await this.prismaService.event.findMany({ where: { userId } });
+  public async listEvents(userId): Promise<Event[]> {
+    return this.eventModel.find().where('userId').equals(userId).exec();
   }
 }
