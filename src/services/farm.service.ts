@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { Farm } from 'src/interfaces/farm.interface';
-import { readFileSync, rmSync, writeFileSync } from 'fs';
+import { readFileSync, rmSync, writeFileSync, mkdirSync, existsSync } from 'fs';
 import { S3ManagerService } from './s3-manager.service';
 import { EventService } from './event.service';
 
@@ -50,6 +50,9 @@ export class FarmService {
   public async uploadFarmPics(files: any, farmId: number) {
     const filesUrls = [];
 
+    if (!existsSync('temp')) {
+      mkdirSync('temp');
+    }
     for (let index = 0; index < files.length; index++) {
       const filePath = 'temp/' + files[index].originalname;
       writeFileSync(filePath, files[index].buffer);
@@ -65,7 +68,7 @@ export class FarmService {
       rmSync(filePath);
 
       filesUrls.push(
-        `${process.env['DO_CDN_ENDPOINT'] ?? ''}/${process.env['DO_SPACES_NAME'] ?? 'ichacara'}/${key}`,
+        `${process.env['DO_SPACES_ENDPOINT'] ?? ''}/${process.env['DO_SPACES_NAME'] ?? 'ichacara'}/${key}`,
       );
     }
 
