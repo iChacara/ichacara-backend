@@ -58,14 +58,14 @@ export class FarmService {
       writeFileSync(filePath, files[index].buffer);
 
       const key = `farm_${farmId}/profile_${Date.now().toString()}.${files[index].originalname.split('.')[1]}`;
-      console.log(process.env);
+      // console.log(process.env);
 
-      await this.s3ManagerService.putObject({
-        key,
-        stream: readFileSync(filePath),
-      });
+      // await this.s3ManagerService.putObject({
+      //   key,
+      //   stream: readFileSync(filePath),
+      // });
 
-      rmSync(filePath);
+      // rmSync(filePath);
 
       filesUrls.push(
         `${process.env['DO_SPACES_ENDPOINT'] ?? ''}/${process.env['DO_SPACES_NAME'] ?? 'ichacara'}/${key}`,
