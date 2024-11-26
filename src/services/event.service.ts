@@ -11,7 +11,7 @@ export class EventService {
     return eventModel.save();
   }
 
-  public async listEvents(userId): Promise<Event[]> {
-    return this.eventModel.find().where('userId').equals(userId).exec();
+  public async listEvents(): Promise<Event[]> {
+    return this.eventModel.find().exec();
   }
 }
