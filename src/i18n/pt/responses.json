@@ -9,6 +9,9 @@
       "EMAIL_ADDRESS_UNAVAIABLE": "Endereço e-mail indisponível",
       "INTERNAL_SERVER_ERROR": "Algum erro inesperado aconteceu, tente novamente mais tarde",
       "FARM_NOT_FOUND": "Chácara não encontrada",
-      "LESSOR_NOT_FOUND": "Locador não encontrado"
+      "LESSOR_NOT_FOUND": "Locador não encontrado",
+      "INVALID_TOKEN": "O token do usuário não é válido",
+      "TOKEN_MISSING": "Nenhum token foi encontrado",
+      "USER_NOT_FOUND": "Usuário não encontrado"
     }
 }
