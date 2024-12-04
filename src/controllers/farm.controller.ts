@@ -6,6 +6,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Patch,
   Query,
   Req,
   UploadedFiles,
@@ -108,6 +109,27 @@ export class FarmController {
   ) {
     try {
       return this.farmService.uploadFarmPics(files, +farmId);
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(
+        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
+      );
+    }
+  }
+
+  @Patch('approve/:farmId')
+  async approveFarm(
+    @Param('farmId') farmId: string,
+    @I18n() i18n: I18nContext,
+  ) {
+    try {
+      const farm = await this.farmService.approveFarm(+farmId);
+      if (!farm) {
+        throw new InternalServerErrorException(
+          i18n.t('responses.MESSAGES.FARM_NOT_FOUND'),
+        );
+      }
+      return { message: i18n.t('responses.MESSAGES.FARM_APPROVED_SUCCESS') };
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(

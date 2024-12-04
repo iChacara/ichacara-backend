@@ -93,4 +93,16 @@ export class FarmService {
       message: 'Fotos da chácara atualizadas com sucesso',
     };
   }
+
+  public async approveFarm(farmId: number) {
+    try {
+      const farm = await this.prismaService.farm.update({
+        where: { id: farmId },
+        data: { approved: true },
+      });
+      return farm;
+    } catch (error) {
+      throw new Error('A chácara não foi encontrada');
+    }
+  }
 }
