@@ -3,7 +3,10 @@ import {
   Body,
   Controller,
   InternalServerErrorException,
+  UnauthorizedException,
+  NotFoundException,
   Post,
+  Get,
   Req,
   UploadedFile,
   UseInterceptors,
@@ -62,4 +65,39 @@ export class UserController {
       );
     }
   }
+  
+  @Get()
+  public async getUserByToken(
+    @Req() request: Request,
+    @I18n() i18n: I18nContext,
+  ) {
+    try {
+      const token = request.headers['authorization']?.split(' ')[1];
+
+      if (!token) {
+        throw new UnauthorizedException(
+          i18n.t('responses.MESSAGES.TOKEN_MISSING'),
+        );
+      }
+
+      const user = await this.userService.getUserByToken(token);
+
+      return user;
+    } catch (error) {
+      if (error.message === 'Invalid or expired token') {
+        throw new UnauthorizedException(
+          i18n.t('responses.MESSAGES.INVALID_TOKEN'),
+        );
+      }
+      if (error.message === 'User not found') {
+        throw new NotFoundException(
+          i18n.t('responses.MESSAGES.USER_NOT_FOUND'),
+        );
+      }
+      throw new InternalServerErrorException(
+        i18n.t('responses.MESSAGES.INTERNAL_SERVER_ERROR'),
+      );
+    }
+  }
+
 }

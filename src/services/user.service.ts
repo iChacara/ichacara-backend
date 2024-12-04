@@ -16,6 +16,36 @@ export class UserService {
     private eventService: EventService,
   ) {}
 
+  public async getUserByToken(token: string) {
+    try {
+      const decoded = await this.jwtService.verifyAsync(token, {
+        secret: process.env['JWT_SECRET'],
+      });
+  
+      const userId = decoded.sub;
+  
+      const user = await this.prismaService.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          email: true,
+          type: true,
+          profilePicture: true,
+          createdAt: true,
+          updatedAt: true,
+        }
+      });
+  
+      if (!user) {
+        throw new Error('Usuário não encontrado');
+      }
+  
+      return user;
+    } catch (error) {
+      throw new Error('Token expirado ou inválido');
+    }
+  }
+
   public async auth(loginData: { email: string; password: string }) {
     const user = await this.prismaService.user.findFirstOrThrow({
       where: {
