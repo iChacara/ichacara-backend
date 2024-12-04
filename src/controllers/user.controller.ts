@@ -26,7 +26,7 @@ export class UserController {
       const authResult = await this.userService.auth(login);
 
       return {
-        message: i18n.t('responses.MESSAGES.CREATE_ACCOUNT_OK'),
+        message: i18n.t('responses.MESSAGES.AUTHENTICATION_OK'),
         data: authResult,
       };
     } catch (error) {
